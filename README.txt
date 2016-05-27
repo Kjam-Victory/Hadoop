@@ -1,3 +1,5 @@
+mvn clean package -Pdist -DskipTests -Dtar -Dmaven.javadoc.skip=true
+
 For the latest information about Hadoop, please visit our website at:
 
    http://hadoop.apache.org/core/
