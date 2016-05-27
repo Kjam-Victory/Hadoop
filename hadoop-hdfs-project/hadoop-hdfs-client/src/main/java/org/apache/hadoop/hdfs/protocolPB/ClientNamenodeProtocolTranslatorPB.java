@@ -154,6 +154,7 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.Rollin
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SaveNamespaceRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBalancerBandwidthRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto;
@@ -357,6 +358,23 @@ public class ClientNamenodeProtocolTranslatorPB implements
         .build();
     try {
       return rpcProxy.setReplication(null, req).getResult();
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  @Override
+  public void addGroup(String groupname)
+      throws IOException {
+    AddGroupRequestProto.Builder req = AddGroupRequestProto.newBuilder()
+        .setGroupname(groupname);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.addGroup(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.addGroup(null, req.build());
+      }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
     }

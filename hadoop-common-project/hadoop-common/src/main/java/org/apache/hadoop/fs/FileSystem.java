@@ -2369,12 +2369,22 @@ public abstract class FileSystem extends Configured implements Closeable {
     return new FsStatus(Long.MAX_VALUE, 0, Long.MAX_VALUE);
   }
 
+	/**
+   * Add group to hdfs.
+   * @param p
+   * @param permission
+   */
+  public void addGroup(String group
+      ) throws IOException {
+  }
+
+
   /**
    * Set permission of a path.
    * @param p
    * @param permission
    */
-  public void setPermission(Path p, FsPermission permission
+	public void setPermission(Path p, FsPermission permission
       ) throws IOException {
   }
 

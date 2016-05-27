@@ -30,6 +30,7 @@ import static org.apache.hadoop.hdfs.server.common.HdfsServerConstants.MAX_PATH_
 import static org.apache.hadoop.hdfs.server.common.HdfsServerConstants.MAX_PATH_LENGTH;
 import static org.apache.hadoop.util.Time.now;
 
+import java.io.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -325,6 +326,14 @@ public class NameNodeRpcServer implements NamenodeProtocols {
       }
       LOG.info("Service RPC server is binding to " + bindHost + ":" +
           serviceRpcAddr.getPort());
+			try{
+        	FileWriter fw = new FileWriter(new File("/Users/Kai_Jiang/Desktop/RpcServerLog.txt"), true);
+        	fw.write("Service RPC server is binding to " + bindHost + ":" + serviceRpcAddr.getPort());
+        	fw.close();
+        }
+        catch(Exception e){
+        	e.printStackTrace();
+        }
 
       int serviceHandlerCount =
         conf.getInt(DFS_NAMENODE_SERVICE_HANDLER_COUNT_KEY,
@@ -819,6 +828,13 @@ public class NameNodeRpcServer implements NamenodeProtocols {
   public BlockStoragePolicy[] getStoragePolicies() throws IOException {
     checkNNStartup();
     return namesystem.getStoragePolicies();
+  }
+
+	@Override // ClientProtocol
+  public void addGroup(String groupname)
+      throws IOException {
+    checkNNStartup();
+    namesystem.addGroup(groupname);
   }
 
   @Override // ClientProtocol

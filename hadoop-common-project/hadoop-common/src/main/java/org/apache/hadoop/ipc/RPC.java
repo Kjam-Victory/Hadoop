@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
+import java.io.*;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.NoRouteToHostException;
@@ -962,7 +963,15 @@ public class RPC {
     }
     
     private void initProtocolMetaInfo(Configuration conf) {
-      RPC.setProtocolEngine(conf, ProtocolMetaInfoPB.class,
+      try{
+				FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/log.txt"));
+        w.write("Here222");
+				w.close();	
+			}
+			catch(Exception e){
+				System.out.println("Hahaha");
+			}
+			RPC.setProtocolEngine(conf, ProtocolMetaInfoPB.class,
           ProtobufRpcEngine.class);
       ProtocolMetaInfoServerSideTranslatorPB xlator = 
           new ProtocolMetaInfoServerSideTranslatorPB(this);
@@ -987,7 +996,8 @@ public class RPC {
     @Override
     public Writable call(RPC.RpcKind rpcKind, String protocol,
         Writable rpcRequest, long receiveTime) throws Exception {
-      return getRpcInvoker(rpcKind).call(this, protocol, rpcRequest,
+      System.out.println("JK2:" + protocol);
+			return getRpcInvoker(rpcKind).call(this, protocol, rpcRequest,
           receiveTime);
     }
   }

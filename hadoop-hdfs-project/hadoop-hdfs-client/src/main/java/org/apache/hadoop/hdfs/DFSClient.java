@@ -1790,6 +1790,26 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
   }
 
   /**
+   * Add group
+   * @param group group name.
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void addGroup(String groupname)
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("addGroup", null)) {
+      namenode.addGroup(groupname);
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
    * Set permissions to a file or directory.
    * @param src path name.
    * @param permission permission to set to

@@ -197,8 +197,7 @@ public class ReservationSystemTestUtil {
   }
 
   public static ReservationSubmissionRequest createSimpleReservationRequest(
-      ReservationId reservationId, int numContainers, long arrival,
-      long deadline, long duration) {
+      int numContainers, long arrival, long deadline, long duration) {
     // create a request with a single atomic ask
     ReservationRequest r =
         ReservationRequest.newInstance(Resource.newInstance(1024, 1),
@@ -211,7 +210,7 @@ public class ReservationSystemTestUtil {
             "testClientRMService#reservation");
     ReservationSubmissionRequest request =
         ReservationSubmissionRequest.newInstance(rDef,
-            reservationQ, reservationId);
+            reservationQ);
     return request;
   }
 

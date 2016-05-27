@@ -152,6 +152,13 @@ message SetOwnerRequestProto {
 message SetOwnerResponseProto { // void response
 }
 
+message AddGroupRequestProto {
+  required string groupname = 1;
+}
+
+message AddGroupResponseProto { // void response
+}
+
 message AbandonBlockRequestProto {
   required ExtendedBlockProto b = 1;
   required string src = 2;
@@ -765,7 +772,10 @@ service ClientNamenodeProtocol {
       returns(GetStoragePoliciesResponseProto);
   rpc setPermission(SetPermissionRequestProto)
       returns(SetPermissionResponseProto);
-  rpc setOwner(SetOwnerRequestProto) returns(SetOwnerResponseProto);
+  rpc addGroup(AddGroupRequestProto) 
+			returns(AddGroupResponseProto);
+  rpc setOwner(SetOwnerRequestProto) 
+			returns(SetOwnerResponseProto);
   rpc abandonBlock(AbandonBlockRequestProto) returns(AbandonBlockResponseProto);
   rpc addBlock(AddBlockRequestProto) returns(AddBlockResponseProto);
   rpc getAdditionalDatanode(GetAdditionalDatanodeRequestProto)

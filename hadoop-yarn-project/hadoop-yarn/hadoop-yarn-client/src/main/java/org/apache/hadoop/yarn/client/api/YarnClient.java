@@ -32,7 +32,6 @@ import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.service.AbstractService;
 import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
-import org.apache.hadoop.yarn.api.protocolrecords.GetNewReservationResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationListRequest;
@@ -536,20 +535,6 @@ public abstract class YarnClient extends AbstractService {
 
   /**
    * <p>
-   * Obtain a {@link GetNewReservationResponse} for a new reservation,
-   * which contains the {@link ReservationId} object.
-   * </p>
-   *
-   * @return The {@link GetNewReservationResponse} containing a new
-   *         {@link ReservationId} object.
-   * @throws YarnException if reservation cannot be created.
-   * @throws IOException if reservation cannot be created.
-   */
-  public abstract GetNewReservationResponse createReservation()
-    throws YarnException, IOException;
-
-  /**
-   * <p>
    * The interface used by clients to submit a new reservation to the
    * {@code ResourceManager}.
    * </p>
@@ -681,7 +666,7 @@ public abstract class YarnClient extends AbstractService {
    * @return response that contains information about reservations that are
    *                being searched for.
    * @throws YarnException if the request is invalid
-   * @throws IOException if the request failed otherwise
+   * @throws IOException
    *
    */
   @Public
@@ -740,10 +725,8 @@ public abstract class YarnClient extends AbstractService {
    * </p>
    *
    * @return cluster node labels collection
-   * @throws YarnException when there is a failure in
-   *           {@see ApplicationClientProtocol}
-   * @throws IOException when there is a failure in
-   *           {@see ApplicationClientProtocol}
+   * @throws YarnException
+   * @throws IOException
    */
   @Public
   @Unstable

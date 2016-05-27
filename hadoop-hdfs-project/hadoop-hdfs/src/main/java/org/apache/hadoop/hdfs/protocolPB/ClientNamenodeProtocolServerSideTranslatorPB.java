@@ -182,6 +182,8 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBal
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBalancerBandwidthResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
@@ -277,6 +279,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
 
   private static final SetOwnerResponseProto VOID_SET_OWNER_RESPONSE = 
   SetOwnerResponseProto.newBuilder().build();
+
+  private static final AddGroupResponseProto VOID_ADD_GROUP_RESPONSE = 
+  AddGroupResponseProto.newBuilder().build();
 
   private static final AbandonBlockResponseProto VOID_ADD_BLOCK_RESPONSE = 
   AbandonBlockResponseProto.newBuilder().build();
@@ -485,6 +490,17 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
       throw new ServiceException(e);
     }
     return VOID_SET_OWNER_RESPONSE;
+  }
+
+  @Override
+  public AddGroupResponseProto addGroup(RpcController controller,
+      AddGroupRequestProto req) throws ServiceException {
+    try {
+      server.addGroup(req.getGroupname());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_ADD_GROUP_RESPONSE;
   }
 
   @Override

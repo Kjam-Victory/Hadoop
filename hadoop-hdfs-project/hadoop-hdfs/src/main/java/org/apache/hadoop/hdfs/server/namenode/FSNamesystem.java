@@ -94,6 +94,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -1673,6 +1674,34 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
   FsServerDefaults getServerDefaults() throws StandbyException {
     checkOperation(OperationCategory.READ);
     return serverDefaults;
+  }
+
+	/**
+   * Add Group to hdfs.
+   * @throws IOException
+   */
+  void addGroup(String group)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/a.txt"));
+      w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
   }
 
   /////////////////////////////////////////////////////////

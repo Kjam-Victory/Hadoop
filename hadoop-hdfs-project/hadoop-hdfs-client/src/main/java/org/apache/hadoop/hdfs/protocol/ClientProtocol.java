@@ -90,7 +90,7 @@ public interface ClientProtocol {
    * 69L is the last version id when this class was used for protocols
    *  serialization. DO not update this version any further.
    */
-  long versionID = 69L;
+   long versionID = 70L;
 
   ///////////////////////////////////////
   // File contents
@@ -325,6 +325,25 @@ public interface ClientProtocol {
   @Idempotent
   void setPermission(String src, FsPermission permission)
       throws IOException;
+
+
+  /**
+   * Add a group for hadoop.
+   *
+   * @throws org.apache.hadoop.security.AccessControlException If access is
+   *           denied
+   * @throws java.io.FileNotFoundException If file <code>src</code> is not found
+   * @throws org.apache.hadoop.hdfs.server.namenode.SafeModeException not
+   *           allowed in safemode
+   * @throws org.apache.hadoop.fs.UnresolvedLinkException If <code>src</code>
+   *           contains a symlink
+   * @throws SnapshotAccessControlException if path is in RO snapshot
+   * @throws IOException If an I/O error occurred
+   */
+  @Idempotent
+  void addGroup(String groupname)
+      throws IOException;
+
 
   /**
    * Set Owner of a path (i.e. a file or a directory).

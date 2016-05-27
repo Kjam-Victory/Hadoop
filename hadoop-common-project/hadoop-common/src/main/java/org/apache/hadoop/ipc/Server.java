@@ -2161,6 +2161,7 @@ public abstract class Server {
         InterruptedException {
       Class<? extends Writable> rpcRequestClass = 
           getRpcRequestWrapper(header.getRpcKind());
+			System.out.println(rpcRequestClass.toString());
       if (rpcRequestClass == null) {
         LOG.warn("Unknown rpc kind "  + header.getRpcKind() + 
             " from client " + getHostAddress());

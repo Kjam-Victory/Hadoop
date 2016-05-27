@@ -17,6 +17,7 @@
 */
 package org.apache.hadoop.yarn.server.nodemanager.containermanager.localizer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.yarn.server.nodemanager.api.ResourceLocalizationSpec;
@@ -29,7 +30,11 @@ public class MockLocalizerHeartbeatResponse
   LocalizerAction action;
   List<ResourceLocalizationSpec> resourceSpecs;
 
-  public MockLocalizerHeartbeatResponse(
+  MockLocalizerHeartbeatResponse() {
+    resourceSpecs = new ArrayList<ResourceLocalizationSpec>();
+  }
+
+  MockLocalizerHeartbeatResponse(
       LocalizerAction action, List<ResourceLocalizationSpec> resources) {
     this.action = action;
     this.resourceSpecs = resources;

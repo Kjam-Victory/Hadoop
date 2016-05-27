@@ -44,6 +44,8 @@ import org.apache.hadoop.util.concurrent.AsyncGet;
 import org.apache.htrace.core.TraceScope;
 import org.apache.htrace.core.Tracer;
 
+import java.io.File;
+import java.io.FileWriter;
 import javax.net.SocketFactory;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -610,9 +612,11 @@ public class ProtobufRpcEngine implements RpcEngine {
        */
       public Writable call(RPC.Server server, String connectionProtocolName,
           Writable writableRequest, long receiveTime) throws Exception {
+				System.out.println("JK: "+connectionProtocolName);
         RpcRequestWrapper request = (RpcRequestWrapper) writableRequest;
         RequestHeaderProto rpcRequest = request.requestHeader;
         String methodName = rpcRequest.getMethodName();
+				System.out.println("JK: "+methodName);
         
         
         /** 
@@ -643,6 +647,15 @@ public class ProtobufRpcEngine implements RpcEngine {
         BlockingService service = (BlockingService) protocolImpl.protocolImpl;
         MethodDescriptor methodDescriptor = service.getDescriptorForType()
             .findMethodByName(methodName);
+				try{
+					FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/log2.txt"));
+        	w.write("Call: connectionProtocolName=" + connectionProtocolName);
+        	w.close();
+
+                }
+				catch(Exception e){
+					e.printStackTrace();
+				}
         if (methodDescriptor == null) {
           String msg = "Unknown method " + methodName + " called on " 
                                 + connectionProtocolName + " protocol.";

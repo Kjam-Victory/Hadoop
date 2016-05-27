@@ -17,6 +17,7 @@
 */
 package org.apache.hadoop.yarn.server.nodemanager.containermanager.localizer;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -64,7 +65,6 @@ import org.apache.hadoop.yarn.api.records.LocalResource;
 import org.apache.hadoop.yarn.api.records.LocalResourceType;
 import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.api.records.URL;
-import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.server.nodemanager.api.LocalizationProtocol;
@@ -73,7 +73,6 @@ import org.apache.hadoop.yarn.server.nodemanager.api.protocolrecords.LocalResour
 import org.apache.hadoop.yarn.server.nodemanager.api.protocolrecords.LocalizerAction;
 import org.apache.hadoop.yarn.server.nodemanager.api.protocolrecords.LocalizerStatus;
 import org.apache.hadoop.yarn.util.ConverterUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
@@ -99,7 +98,7 @@ public class TestContainerLocalizer {
   private LocalizationProtocol nmProxy;
 
   @Test
-  public void testMain() throws Exception {
+  public void testContainerLocalizerMain() throws Exception {
     FileContext fs = FileContext.getLocalFSFileContext();
     spylfs = spy(fs.getDefaultFileSystem());
     ContainerLocalizer localizer =
@@ -168,7 +167,7 @@ public class TestContainerLocalizer {
         isA(UserGroupInformation.class));
 
     // run localization
-    localizer.runLocalization(nmAddr);
+    assertEquals(0, localizer.runLocalization(nmAddr));
     for (Path p : localDirs) {
       Path base = new Path(new Path(p, ContainerLocalizer.USERCACHE), appUser);
       Path privcache = new Path(base, ContainerLocalizer.FILECACHE);
@@ -199,27 +198,7 @@ public class TestContainerLocalizer {
           }
         }));
   }
-
-  @Test(timeout = 15000)
-  public void testMainFailure() throws Exception {
-
-    FileContext fs = FileContext.getLocalFSFileContext();
-    spylfs = spy(fs.getDefaultFileSystem());
-    ContainerLocalizer localizer = setupContainerLocalizerForTest();
-
-    // Assume the NM heartbeat fails say because of absent tokens.
-    when(nmProxy.heartbeat(isA(LocalizerStatus.class))).thenThrow(
-        new YarnException("Sigh, no token!"));
-
-    // run localization, it should fail
-    try {
-      localizer.runLocalization(nmAddr);
-      Assert.fail("Localization succeeded unexpectedly!");
-    } catch (IOException e) {
-      Assert.assertTrue(e.getMessage().contains("Sigh, no token!"));
-    }
-  }
-
+  
   @Test
   @SuppressWarnings("unchecked")
   public void testLocalizerTokenIsGettingRemoved() throws Exception {
@@ -235,22 +214,18 @@ public class TestContainerLocalizer {
   @Test
   @SuppressWarnings("unchecked") // mocked generics
   public void testContainerLocalizerClosesFilesystems() throws Exception {
-
     // verify filesystems are closed when localizer doesn't fail
     FileContext fs = FileContext.getLocalFSFileContext();
     spylfs = spy(fs.getDefaultFileSystem());
-
     ContainerLocalizer localizer = setupContainerLocalizerForTest();
     doNothing().when(localizer).localizeFiles(any(LocalizationProtocol.class),
         any(CompletionService.class), any(UserGroupInformation.class));
     verify(localizer, never()).closeFileSystems(
         any(UserGroupInformation.class));
-
     localizer.runLocalization(nmAddr);
     verify(localizer).closeFileSystems(any(UserGroupInformation.class));
 
     spylfs = spy(fs.getDefaultFileSystem());
-
     // verify filesystems are closed when localizer fails
     localizer = setupContainerLocalizerForTest();
     doThrow(new YarnRuntimeException("Forced Failure")).when(localizer).localizeFiles(
@@ -258,12 +233,8 @@ public class TestContainerLocalizer {
         any(UserGroupInformation.class));
     verify(localizer, never()).closeFileSystems(
         any(UserGroupInformation.class));
-    try {
-      localizer.runLocalization(nmAddr);
-      Assert.fail("Localization succeeded unexpectedly!");
-    } catch (IOException e) {
-      verify(localizer).closeFileSystems(any(UserGroupInformation.class));
-    }
+    localizer.runLocalization(nmAddr);
+    verify(localizer).closeFileSystems(any(UserGroupInformation.class));
   }
 
   @SuppressWarnings("unchecked") // mocked generics

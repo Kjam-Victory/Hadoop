@@ -1516,6 +1516,31 @@ public class DistributedFileSystem extends FileSystem {
     }.resolve(this, absF);
   }
 
+
+  @Override
+  public void addGroup(String group
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.addGroup(group);
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.addGroup(group);
+          return null;
+        }
+      }.resolve(this, absF);
+
+  }
+
+
   @Override
   public void setPermission(Path p, final FsPermission permission
   ) throws IOException {

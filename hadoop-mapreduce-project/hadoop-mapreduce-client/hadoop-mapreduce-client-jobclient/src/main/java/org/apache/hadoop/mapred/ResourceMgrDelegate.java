@@ -437,12 +437,6 @@ public class ResourceMgrDelegate extends YarnClient {
   }
 
   @Override
-  public GetNewReservationResponse createReservation() throws YarnException,
-      IOException {
-    return client.createReservation();
-  }
-
-  @Override
   public ReservationSubmissionResponse submitReservation(
       ReservationSubmissionRequest request) throws YarnException, IOException {
     return client.submitReservation(request);

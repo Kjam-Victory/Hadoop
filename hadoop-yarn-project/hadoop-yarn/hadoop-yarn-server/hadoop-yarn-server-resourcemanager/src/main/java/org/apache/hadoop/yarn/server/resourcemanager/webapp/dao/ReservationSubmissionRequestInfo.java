@@ -37,9 +37,6 @@ public class ReservationSubmissionRequestInfo {
   @XmlElement(name = "reservation-definition")
   private ReservationDefinitionInfo reservationDefinition;
 
-  @XmlElement(name = "reservation-id")
-  private String reservationId;
-
   public ReservationSubmissionRequestInfo() {
   }
 
@@ -49,14 +46,6 @@ public class ReservationSubmissionRequestInfo {
 
   public void setQueue(String queue) {
     this.queue = queue;
-  }
-
-  public String getReservationId() {
-    return reservationId;
-  }
-
-  public void setReservationId(String reservationId) {
-    this.reservationId = reservationId;
   }
 
   public ReservationDefinitionInfo getReservationDefinition() {

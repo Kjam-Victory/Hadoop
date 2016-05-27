@@ -18,10 +18,14 @@
 package org.apache.hadoop.yarn.server.nodemanager.containermanager.application;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +41,6 @@ import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.event.DrainDispatcher;
 import org.apache.hadoop.yarn.event.EventHandler;
-import org.apache.hadoop.yarn.proto.YarnServerNodemanagerRecoveryProtos.ContainerManagerApplicationProto;
 import org.apache.hadoop.yarn.security.ContainerTokenIdentifier;
 import org.apache.hadoop.yarn.server.api.records.MasterKey;
 import org.apache.hadoop.yarn.server.api.records.impl.pb.MasterKeyPBImpl;
@@ -58,14 +61,12 @@ import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.eve
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.event.LogHandlerEventType;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.monitor.ContainersMonitorEvent;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.monitor.ContainersMonitorEventType;
-import org.apache.hadoop.yarn.server.nodemanager.recovery.NMStateStoreService;
 import org.apache.hadoop.yarn.server.nodemanager.security.NMContainerTokenSecretManager;
 import org.apache.hadoop.yarn.server.nodemanager.security.NMTokenSecretManagerInNM;
 import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 
 
@@ -295,26 +296,6 @@ public class TestApplication {
   }
 
   @Test
-  public void testApplicationOnAppLogHandlingInitedEvtShouldStoreLogInitedTime()
-      throws IOException {
-    WrappedApplication wa = new WrappedApplication(5,  314159265358979L,
-        "yak", 0);
-    wa.initApplication();
-
-    ArgumentCaptor<ContainerManagerApplicationProto> applicationProto =
-        ArgumentCaptor.forClass(ContainerManagerApplicationProto.class);
-
-    final long timestamp = wa.applicationLogInited();
-
-    verify(wa.stateStoreService).storeApplication(any(ApplicationId.class),
-        applicationProto.capture());
-
-    assertEquals(applicationProto.getValue().getAppLogAggregationInitedTime()
-        , timestamp);
-  }
-
-
-  @Test
   @SuppressWarnings("unchecked")
   public void testAppFinishedOnCompletedContainers() {
     WrappedApplication wa = null;
@@ -503,7 +484,7 @@ public class TestApplication {
     final Context context;
     final Map<ContainerId, ContainerTokenIdentifier> containerTokenIdentifierMap;
     final NMTokenSecretManagerInNM nmTokenSecretMgr;
-    final NMStateStoreService stateStoreService;
+    
     final ApplicationId appId;
     final Application app;
 
@@ -530,7 +511,7 @@ public class TestApplication {
       dispatcher.register(LogHandlerEventType.class, logAggregationBus);
 
       nmTokenSecretMgr = mock(NMTokenSecretManagerInNM.class);
-      stateStoreService = mock(NMStateStoreService.class);
+
       context = mock(Context.class);
       
       when(context.getContainerTokenSecretManager()).thenReturn(
@@ -538,7 +519,6 @@ public class TestApplication {
       when(context.getApplicationACLsManager()).thenReturn(
         new ApplicationACLsManager(conf));
       when(context.getNMTokenSecretManager()).thenReturn(nmTokenSecretMgr);
-      when(context.getNMStateStore()).thenReturn(stateStoreService);
       
       // Setting master key
       MasterKey masterKey = new MasterKeyPBImpl();
@@ -604,13 +584,6 @@ public class TestApplication {
     public void applicationInited() {
       app.handle(new ApplicationInitedEvent(appId));
       drainDispatcherEvents();
-    }
-
-    public long applicationLogInited() {
-      ApplicationEvent appEvt = new ApplicationEvent(app.getAppId(),
-          ApplicationEventType.APPLICATION_LOG_HANDLING_INITED);
-      app.handle(appEvt);
-      return appEvt.getTimestamp();
     }
 
     public void appFinished() {

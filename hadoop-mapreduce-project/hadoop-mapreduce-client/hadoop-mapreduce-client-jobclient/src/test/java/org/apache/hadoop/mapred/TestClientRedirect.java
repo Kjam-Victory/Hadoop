@@ -425,11 +425,6 @@ public class TestClientRedirect {
       return null;
     }
 
-    @Override
-    public GetNewReservationResponse getNewReservation(
-        GetNewReservationRequest request) throws YarnException, IOException {
-      return null;
-    }
 
     @Override
     public ReservationSubmissionResponse submitReservation(

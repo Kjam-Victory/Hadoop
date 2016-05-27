@@ -32,8 +32,6 @@ import java.util.UUID;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.authorize.AccessControlList;
 import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
-import org.apache.hadoop.yarn.api.protocolrecords.GetNewReservationRequest;
-import org.apache.hadoop.yarn.api.protocolrecords.GetNewReservationResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationListRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationListResponse;
@@ -244,8 +242,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifySubmitReservationSuccess(String submitter, String
           queueName) throws Exception {
-    ReservationId reservationId = createReservation(submitter);
-    submitReservation(submitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(submitter, queueName);
 
     deleteReservation(submitter, reservationId);
   }
@@ -253,8 +251,7 @@ public class ReservationACLsTestBase extends ACLsTestBase {
   private void verifySubmitReservationFailure(String submitter, String
           queueName) throws Exception {
     try {
-      ReservationId reservationId = createReservation(submitter);
-      submitReservation(submitter, queueName, reservationId);
+      submitReservation(submitter, queueName);
       Assert.fail("Submit reservation by the enemy should fail!");
     } catch (YarnException e) {
       handleAdministerException(e, submitter, queueName, ReservationACL
@@ -264,8 +261,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyListReservationSuccess(String lister, String
           originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
 
     ReservationListResponse adminResponse = listReservation(lister, queueName);
 
@@ -278,8 +275,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyListReservationFailure(String lister,
           String originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
 
     try {
       listReservation(lister, queueName);
@@ -294,8 +291,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyListReservationByIdSuccess(String lister, String
           originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
 
     ReservationListResponse adminResponse = listReservationById(lister,
             reservationId, queueName);
@@ -309,8 +306,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyListReservationByIdFailure(String lister,
           String originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
     try {
       listReservationById(lister, reservationId, queueName);
       Assert.fail("List reservation by the enemy should fail!");
@@ -324,8 +321,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyDeleteReservationSuccess(String killer,
           String originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
 
     deleteReservation(killer, reservationId);
   }
@@ -333,8 +330,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
   private void verifyDeleteReservationFailure(String killer,
           String originalSubmitter, String queueName) throws Exception {
 
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+        submitReservation(originalSubmitter, queueName);
 
     try {
       deleteReservation(killer, reservationId);
@@ -349,8 +346,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyUpdateReservationSuccess(String updater,
           String originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
 
     final ReservationUpdateRequest updateRequest =
             ReservationUpdateRequest.newInstance(
@@ -365,8 +362,8 @@ public class ReservationACLsTestBase extends ACLsTestBase {
 
   private void verifyUpdateReservationFailure(String updater,
           String originalSubmitter, String queueName) throws Exception {
-    ReservationId reservationId = createReservation(originalSubmitter);
-    submitReservation(originalSubmitter, queueName, reservationId);
+    ReservationId reservationId =
+            submitReservation(originalSubmitter, queueName);
 
     final ReservationUpdateRequest updateRequest =
             ReservationUpdateRequest.newInstance(
@@ -425,27 +422,17 @@ public class ReservationACLsTestBase extends ACLsTestBase {
     deleteClient.deleteReservation(deleteRequest);
   }
 
-  private ReservationId createReservation(String creator) throws Exception {
-
-    ApplicationClientProtocol creatorClient = getRMClientForUser(creator);
-    GetNewReservationRequest getNewReservationRequest =
-        GetNewReservationRequest.newInstance();
-
-    GetNewReservationResponse response = creatorClient
-        .getNewReservation(getNewReservationRequest);
-    return response.getReservationId();
-  }
-
-  private void submitReservation(String submitter,
-      String queueName, ReservationId reservationId) throws Exception {
+  private ReservationId submitReservation(String submitter,
+      String queueName) throws Exception {
 
     ApplicationClientProtocol submitterClient = getRMClientForUser(submitter);
     ReservationSubmissionRequest reservationSubmissionRequest =
-        ReservationSubmissionRequest.newInstance(
-        makeSimpleReservationDefinition(), queueName, reservationId);
+            ReservationSubmissionRequest.newInstance(
+                    makeSimpleReservationDefinition(), queueName);
 
     ReservationSubmissionResponse response = submitterClient
             .submitReservation(reservationSubmissionRequest);
+    return response.getReservationId();
   }
 
   private void handleAdministerException(Exception e, String user, String
