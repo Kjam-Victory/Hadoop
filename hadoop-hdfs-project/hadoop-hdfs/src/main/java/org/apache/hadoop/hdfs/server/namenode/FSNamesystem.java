@@ -1704,6 +1704,34 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //logAuditEvent(true, "addGroup", group, null, auditStat);
   }
 
+   /**
+   * Delete Group to hdfs.
+   * @throws IOException
+   */
+  void deleteGroup(String group)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteGroup.txt"));
+      w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
   /////////////////////////////////////////////////////////
   //
   // These methods are called by HadoopFS clients

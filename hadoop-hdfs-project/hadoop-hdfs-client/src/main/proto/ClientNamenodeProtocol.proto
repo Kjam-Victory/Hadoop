@@ -159,6 +159,13 @@ message AddGroupRequestProto {
 message AddGroupResponseProto { // void response
 }
 
+message DeleteGroupRequestProto {
+  required string groupname = 1;
+}
+
+message DeleteGroupResponseProto { // void response
+}
+
 message AbandonBlockRequestProto {
   required ExtendedBlockProto b = 1;
   required string src = 2;
@@ -774,6 +781,8 @@ service ClientNamenodeProtocol {
       returns(SetPermissionResponseProto);
   rpc addGroup(AddGroupRequestProto) 
 			returns(AddGroupResponseProto);
+  rpc deleteGroup(DeleteGroupRequestProto) 
+      returns(DeleteGroupResponseProto);
   rpc setOwner(SetOwnerRequestProto) 
 			returns(SetOwnerResponseProto);
   rpc abandonBlock(AbandonBlockRequestProto) returns(AbandonBlockResponseProto);

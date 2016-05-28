@@ -830,12 +830,21 @@ public class NameNodeRpcServer implements NamenodeProtocols {
     return namesystem.getStoragePolicies();
   }
 
+
 	@Override // ClientProtocol
   public void addGroup(String groupname)
       throws IOException {
     checkNNStartup();
     namesystem.addGroup(groupname);
   }
+
+  @Override // ClientProtocol
+  public void deleteGroup(String groupname)
+      throws IOException {
+    checkNNStartup();
+    namesystem.deleteGroup(groupname);
+  }
+
 
   @Override // ClientProtocol
   public void setPermission(String src, FsPermission permissions)

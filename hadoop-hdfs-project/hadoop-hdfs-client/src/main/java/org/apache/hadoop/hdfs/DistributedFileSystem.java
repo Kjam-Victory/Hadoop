@@ -1537,7 +1537,28 @@ public class DistributedFileSystem extends FileSystem {
           return null;
         }
       }.resolve(this, absF);
+  }
 
+  @Override
+  public void deleteGroup(String group
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.deleteGroup(group);
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.deleteGroup(group);
+          return null;
+        }
+      }.resolve(this, absF);
   }
 
 
