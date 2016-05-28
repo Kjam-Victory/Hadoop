@@ -10,6 +10,7 @@ git init
 git remote add cs219 https://xxxx.xxx 
 git pull cs219 master:origin
 xxxx modify code
+git add -A
 git status
 git commit -m "Commit Message"
 git push cs219 origin master:[Your Name]
