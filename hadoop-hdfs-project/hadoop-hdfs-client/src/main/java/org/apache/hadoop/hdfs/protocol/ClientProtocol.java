@@ -346,6 +346,24 @@ public interface ClientProtocol {
 
 
   /**
+   * Delete a group from hadoop.
+   *
+   * @throws org.apache.hadoop.security.AccessControlException If access is
+   *           denied
+   * @throws java.io.FileNotFoundException If file <code>src</code> is not found
+   * @throws org.apache.hadoop.hdfs.server.namenode.SafeModeException not
+   *           allowed in safemode
+   * @throws org.apache.hadoop.fs.UnresolvedLinkException If <code>src</code>
+   *           contains a symlink
+   * @throws SnapshotAccessControlException if path is in RO snapshot
+   * @throws IOException If an I/O error occurred
+   */
+  @Idempotent
+  void deleteGroup(String groupname)
+      throws IOException;
+
+
+  /**
    * Set Owner of a path (i.e. a file or a directory).
    * The parameters username and groupname cannot both be null.
    * @param src file path

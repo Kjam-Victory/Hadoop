@@ -182,8 +182,12 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBal
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBalancerBandwidthResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerResponseProto;
+
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupResponseProto;
+
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
@@ -280,8 +284,13 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   private static final SetOwnerResponseProto VOID_SET_OWNER_RESPONSE = 
   SetOwnerResponseProto.newBuilder().build();
 
+
   private static final AddGroupResponseProto VOID_ADD_GROUP_RESPONSE = 
   AddGroupResponseProto.newBuilder().build();
+
+  private static final DeleteGroupResponseProto VOID_DELETE_GROUP_RESPONSE = 
+  DeleteGroupResponseProto.newBuilder().build();
+
 
   private static final AbandonBlockResponseProto VOID_ADD_BLOCK_RESPONSE = 
   AbandonBlockResponseProto.newBuilder().build();
@@ -492,6 +501,7 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
     return VOID_SET_OWNER_RESPONSE;
   }
 
+
   @Override
   public AddGroupResponseProto addGroup(RpcController controller,
       AddGroupRequestProto req) throws ServiceException {
@@ -502,6 +512,18 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
     }
     return VOID_ADD_GROUP_RESPONSE;
   }
+
+  @Override
+  public DeleteGroupResponseProto deleteGroup(RpcController controller,
+      DeleteGroupRequestProto req) throws ServiceException {
+    try {
+      server.deleteGroup(req.getGroupname());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_DELETE_GROUP_RESPONSE;
+  }
+
 
   @Override
   public AbandonBlockResponseProto abandonBlock(RpcController controller,

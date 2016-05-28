@@ -18,7 +18,7 @@
 set -e               # exit on error
 
 cd "$(dirname "$0")" # connect to root
-USER="kai_jiang"
+USER="joe"
 #docker build -t hadoop-build dev-support/docker
 
 if [ "$(uname -s)" == "Linux" ]; then
