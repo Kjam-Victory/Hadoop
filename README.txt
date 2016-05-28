@@ -6,6 +6,7 @@ build: mvn clean package -Pdist -DskipTests -Dtar -Dmaven.javadoc.skip=true
 
 
 git instructions:
+git init
 git remote add cs219 https://xxxx.xxx 
 git pull cs219 master:origin
 xxxx modify code
