@@ -166,6 +166,34 @@ message DeleteGroupRequestProto {
 message DeleteGroupResponseProto { // void response
 }
 
+message RemoveUserFromGroupRequestProto {
+  required User user = 1;
+  required string groupname = 2;
+}
+
+message RemoveUserFromGroupResponseProto { // void response
+}
+
+message GetGroupsRequestProto {
+  required User user = 1;
+}
+
+message GetGroupsResponseProto { // void response
+}
+
+message GetAllUsersRequestProto { //void response
+}
+
+message GetAllUsersResponseProto { //void response
+}
+
+message GetAllGroupsRequestProto { // void response
+}
+
+message GetAllGroupsResponseProto { // void response
+}
+
+
 message AbandonBlockRequestProto {
   required ExtendedBlockProto b = 1;
   required string src = 2;

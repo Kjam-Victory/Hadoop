@@ -1732,6 +1732,118 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //logAuditEvent(true, "addGroup", group, null, auditStat);
   }
 
+  /**
+   * Remove User from Group to hdfs.
+   * @throws IOException
+   */
+  void removeUserFromGroup(User user, String group)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/removeUserFromGroup.txt"));
+      w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
+  /**
+   * Get Group to hdfs.
+   * @throws IOException
+   */
+  void getGroups(User user)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));
+      w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
+
+  /**
+   * Get all users to hdfs.
+   * @throws IOException
+   */
+  void getAllUsers()
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));
+      w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
+  /**
+   * Get all groups to hdfs.
+   * @throws IOException
+   */
+  void getAllGroups()
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllGroups.txt"));
+      w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
   /////////////////////////////////////////////////////////
   //
   // These methods are called by HadoopFS clients

@@ -187,6 +187,16 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGro
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsResponseProto;
+
+
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionResponseProto;
@@ -291,6 +301,17 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   private static final DeleteGroupResponseProto VOID_DELETE_GROUP_RESPONSE = 
   DeleteGroupResponseProto.newBuilder().build();
 
+  private static final RemoveUserFromGroupResponseProto VOID_REMOVE_USER_FROM_GROUP_RESPONSE = 
+  RemoveUserFromGroupResponseProto.newBuilder().build();
+
+  private static final GetGroupsResponseProto VOID_GET_GROUPS_RESPONSE = 
+  GetGroupsResponseProto.newBuilder().build();
+
+  private static final GetAllUsersResponseProto VOID_GET_ALL_USERS_RESPONSE = 
+  GetAllUsersResponseProto.newBuilder().build();
+
+  private static final GetAllGroupsResponseProto VOID_GET_ALL_GROUPS_RESPONSE = 
+  GetAllGroupsResponseProto.newBuilder().build();
 
   private static final AbandonBlockResponseProto VOID_ADD_BLOCK_RESPONSE = 
   AbandonBlockResponseProto.newBuilder().build();
@@ -522,6 +543,47 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
       throw new ServiceException(e);
     }
     return VOID_DELETE_GROUP_RESPONSE;
+  }
+
+  @Override
+  public RemoveUserFromGroupResponseProto removeUserFromGroup(RpcController controller,
+      RemoveUserFromGroupRequestProto req) throws ServiceException {
+    try {
+      server.removeUserFromGroup(req.getUser(),req.getGroupname());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_REMOVE_USER_FROM_GROUP_RESPONSE;
+  }
+
+  public GetGroupsResponseProto getGroups(RpcController controller,
+      GetGroupsRequestProto req) throws ServiceException {
+    try {
+      server.getGroups(req.getUser());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_GET_GROUPS_RESPONSE;
+  }
+
+  public GetAllUsersResponseProto getAllUsers(RpcController controller,
+      GetAllUsersRequestProto req) throws ServiceException {
+    try {
+      server.getAllUsers();
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_GET_ALL_USERS_RESPONSE;
+  }
+
+  public GetAllGroupsResponseProto getAllGroups(RpcController controller,
+      GetAllGroupsRequestProto req) throws ServiceException {
+    try {
+      server.getAllGroups();
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_GET_ALL_GROUPS_RESPONSE;
   }
 
 

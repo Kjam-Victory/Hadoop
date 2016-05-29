@@ -845,6 +845,34 @@ public class NameNodeRpcServer implements NamenodeProtocols {
     namesystem.deleteGroup(groupname);
   }
 
+  @Override // ClientProtocol
+  public void removeUserFromGroup(User user, String groupname)
+      throws IOException {
+    checkNNStartup();
+    namesystem.removeUserFromGroup(user, groupname);
+  }
+
+  @Override // ClientProtocol
+  public void getGroups(User user)
+      throws IOException {
+    checkNNStartup();
+    namesystem.getGroups(user);
+  }
+
+  @Override // ClientProtocol
+  public void getAllUsers()
+      throws IOException {
+    checkNNStartup();
+    namesystem.getAllUsers();
+  }
+
+  @Override // ClientProtocol
+  public void getAllGroups()
+      throws IOException {
+    checkNNStartup();
+    namesystem.getAllGroups();
+  }
+
 
   @Override // ClientProtocol
   public void setPermission(String src, FsPermission permissions)

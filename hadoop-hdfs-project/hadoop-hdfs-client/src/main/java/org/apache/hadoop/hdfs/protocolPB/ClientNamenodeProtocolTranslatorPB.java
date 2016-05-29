@@ -157,6 +157,10 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwn
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsRequestProto;
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
@@ -386,8 +390,7 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public void deleteGroup(String groupname)
       throws IOException {
-    DeleteGroupRequestProto.Builder req = DeleteGroupRequestProto.newBuilder()
-        .setGroupname(groupname);
+    DeleteGroupRequestProto.Builder req = DeleteGroupRequestProto.newBuilder().setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.deleteGroup(null, req.build());
@@ -399,6 +402,74 @@ public class ClientNamenodeProtocolTranslatorPB implements
       throw ProtobufHelper.getRemoteException(e);
     }
   }
+
+  @Override
+  public void removeUserFromGroup(User user, String groupname)
+      throws IOException {
+    RemoveUserFromGroupRequestProto.Builder req = RemoveUserFromGroupRequestProto.newBuilder().setGroupname(groupname).setUser(user);
+
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.removeUserFromGroup(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.removeUserFromGroup(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  @Override
+  public void getGroups(User user)
+      throws IOException {
+    GetGroupsRequestProto.Builder req = GetGroupsRequestProto.newBuilder().setUser(user);
+
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.getGroups(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.getGroups(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  public void getAllUsers()
+      throws IOException {
+    GetAllUsersRequestProto.Builder req = GetAllUsersRequestProto.newBuilder();
+
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.getAllUsers(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.getAllUsers(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  public void getAllGroups()
+      throws IOException {
+    GetAllGroupsRequestProto.Builder req = GetAllGroupsRequestProto.newBuilder();
+
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.getAllGroups(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.getAllGroups(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+
 
   @Override
   public void setPermission(String src, FsPermission permission)

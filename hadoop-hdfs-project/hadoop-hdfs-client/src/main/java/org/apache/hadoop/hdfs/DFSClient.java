@@ -1830,6 +1830,86 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
   }
 
   /**
+   * Remove user from group
+   * @param user username, group group name.
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void removeUserFromGroup(User user, String groupname)
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("removeUserFromGroup", null)) {
+      namenode.removeUserFromGroup(user, groupname);
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
+   * get groups
+   * @param user user name.
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void getGroups(User user)
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("getGroups", null)) {
+      namenode.getGroups(user);
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
+   * get all users
+   * @param 
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void getAllUsers()
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("getAllUsers", null)) {
+      namenode.getAllUsers();
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
+   * get all groups
+   * @param 
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void getAllGroups()
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("getAllGroups", null)) {
+      namenode.getAllGroups();
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
    * Set permissions to a file or directory.
    * @param src path name.
    * @param permission permission to set to

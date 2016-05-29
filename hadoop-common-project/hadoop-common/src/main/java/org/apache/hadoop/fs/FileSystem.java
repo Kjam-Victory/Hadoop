@@ -2385,6 +2385,37 @@ public abstract class FileSystem extends Configured implements Closeable {
       ) throws IOException {
   }
 
+  /**
+   * remove user from group from hdfs.
+   * @param user user name, group Group name
+   */
+  public void removeUserFromGroup(User user, String group
+      ) throws IOException {
+  }
+
+  /**
+   * get groups from hdfs.
+   * @param user user name
+   */
+  public void getGroups(User user
+      ) throws IOException {
+  }
+
+  /**
+   * get users from hdfs.
+   * @param 
+   */
+  public void getAllUsers(
+      ) throws IOException {
+  }
+
+  /**
+   * get all groups from hdfs.
+   * @param 
+   */
+  public void getAllGroups(
+      ) throws IOException {
+  }
 
   /**
    * Set permission of a path.

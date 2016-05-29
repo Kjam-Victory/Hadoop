@@ -1561,6 +1561,96 @@ public class DistributedFileSystem extends FileSystem {
       }.resolve(this, absF);
   }
 
+  @Override
+  public void removeUserFromGroup(User user, String group
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.removeUserFromGroup(user, group);
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.removeUserFromGroup(user, group);
+          return null;
+        }
+      }.resolve(this, absF);
+  }  
+
+  @Override
+  public void getGroups(User user
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.getGroups(user);
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.getGroups(user);
+          return null;
+        }
+      }.resolve(this, absF);
+  }
+
+  @Override
+  public void getAllUsers(
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.getAllUsers();
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.getAllUsers();
+          return null;
+        }
+      }.resolve(this, absF);
+  }
+
+
+  @Override
+  public void getAllGroups(
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.getAllGroups();
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.getAllGroups();
+          return null;
+        }
+      }.resolve(this, absF);
+  }
+
+
 
   @Override
   public void setPermission(Path p, final FsPermission permission
