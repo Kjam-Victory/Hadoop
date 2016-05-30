@@ -152,10 +152,13 @@ message SetOwnerRequestProto {
 message SetOwnerResponseProto { // void response
 }
 
+
+message CreateGroupRequestProto {
 message AddGroupRequestProto {
   required string groupname = 1;
 }
 
+message CreateGroupResponseProto { // void response
 message AddGroupResponseProto { // void response
 }
 
@@ -164,6 +167,33 @@ message DeleteGroupRequestProto {
 }
 
 message DeleteGroupResponseProto { // void response
+}
+
+message UserProto {
+  required string name = 1;
+  required uint32 ip = 2;
+}
+
+message CreateUserRequestProto {
+  required UserProto user = 1;
+}
+
+message CreateUserResponseProto { // void response
+}
+
+message DeleteUserRequestProto {
+  required UserProto user = 1;
+}
+
+message DeleteUserResponseProto { // void response
+}
+
+message AddUsertoGroupRequestProto {
+  required UserProto user = 1;
+  required string groupname = 2;
+}
+
+message AddUsertoGroupResponseProto { // void response
 }
 
 message RemoveUserFromGroupRequestProto {
@@ -807,10 +837,21 @@ service ClientNamenodeProtocol {
       returns(GetStoragePoliciesResponseProto);
   rpc setPermission(SetPermissionRequestProto)
       returns(SetPermissionResponseProto);
+
+  rpc createGroup(CreateGroupRequestProto) 
+			returns(CreateGroupResponseProto);
   rpc addGroup(AddGroupRequestProto) 
 			returns(AddGroupResponseProto);
   rpc deleteGroup(DeleteGroupRequestProto) 
       returns(DeleteGroupResponseProto);
+  rpc createUser(CreateUserRequestProto) 
+      returns(CreateUserResponseProto);
+  rpc deleteUser(DeleteUserRequestProto) 
+      returns(DeleteUserResponseProto);
+  rpc addUsertoGroup(AddUsertoGroupRequestProto) 
+      returns(AddUsertoGroupResponseProto);
+
+
   rpc setOwner(SetOwnerRequestProto) 
 			returns(SetOwnerResponseProto);
   rpc abandonBlock(AbandonBlockRequestProto) returns(AbandonBlockResponseProto);

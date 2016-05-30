@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hdfs;
 
+import org.apache.hadoop.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -1518,6 +1520,7 @@ public class DistributedFileSystem extends FileSystem {
 
 
   @Override
+  public void createGroup(String group
   public void addGroup(String group
       ) throws IOException {
     statistics.incrementWriteOps(1);
@@ -1526,6 +1529,7 @@ public class DistributedFileSystem extends FileSystem {
         @Override
         public Void doCall(final Path p)
             throws IOException, UnresolvedLinkException {
+          dfs.createGroup(group);
           dfs.addGroup(group);
           return null;
         }
@@ -1533,6 +1537,7 @@ public class DistributedFileSystem extends FileSystem {
         @Override
         public Void next(final FileSystem fs, final Path p)
             throws IOException {
+          fs.createGroup(group);
           fs.addGroup(group);
           return null;
         }
@@ -1562,6 +1567,18 @@ public class DistributedFileSystem extends FileSystem {
   }
 
   @Override
+  public void createUser(User user
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.createUser(user);
+          return null;
+        }
+  @Override
   public void removeUserFromGroup(User user, String group
       ) throws IOException {
     statistics.incrementWriteOps(1);
@@ -1577,11 +1594,66 @@ public class DistributedFileSystem extends FileSystem {
         @Override
         public Void next(final FileSystem fs, final Path p)
             throws IOException {
+          fs.createUser(user);
+          return null;
+        }
+      }.resolve(this, absF);
+  }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
           fs.removeUserFromGroup(user, group);
           return null;
         }
       }.resolve(this, absF);
   }  
+
+  @Override
+  public void deleteUser(User user
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.deleteUser(user);
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.deleteUser(user);
+          return null;
+        }
+      }.resolve(this, absF);
+  }
+
+  @Override
+  public void addUsertoGroup(User user, String group
+      ) throws IOException {
+    statistics.incrementWriteOps(1);
+      Path absF = null;
+      new FileSystemLinkResolver<Void>() {
+        @Override
+        public Void doCall(final Path p)
+            throws IOException, UnresolvedLinkException {
+          dfs.addUsertoGroup(user, group);
+          return null;
+        }
+
+        @Override
+        public Void next(final FileSystem fs, final Path p)
+            throws IOException {
+          fs.addUsertoGroup(user, group);
+          return null;
+        }
+      }.resolve(this, absF);
+  }
+
+
 
   @Override
   public void getGroups(User user

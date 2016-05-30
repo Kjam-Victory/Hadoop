@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs.protocolPB;
 
+import org.apache.hadoop.*;
+
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
@@ -183,10 +185,18 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBal
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerResponseProto;
 
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteUserRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteUserResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddUsertoGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddUsertoGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsRequestProto;
@@ -295,14 +305,25 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   SetOwnerResponseProto.newBuilder().build();
 
 
+  private static final CreateGroupResponseProto VOID_CREATE_GROUP_RESPONSE = 
+  CreateGroupResponseProto.newBuilder().build();
   private static final AddGroupResponseProto VOID_ADD_GROUP_RESPONSE = 
   AddGroupResponseProto.newBuilder().build();
 
   private static final DeleteGroupResponseProto VOID_DELETE_GROUP_RESPONSE = 
   DeleteGroupResponseProto.newBuilder().build();
 
+  private static final CreateUserResponseProto VOID_CREATE_USER_RESPONSE = 
+  CreateUserResponseProto.newBuilder().build();
   private static final RemoveUserFromGroupResponseProto VOID_REMOVE_USER_FROM_GROUP_RESPONSE = 
   RemoveUserFromGroupResponseProto.newBuilder().build();
+
+  private static final DeleteUserResponseProto VOID_DELETE_USER_RESPONSE = 
+  DeleteUserResponseProto.newBuilder().build();
+
+  private static final AddUsertoGroupResponseProto VOID_ADD_USERTO_GROUP_RESPONSE = 
+  AddUsertoGroupResponseProto.newBuilder().build();
+
 
   private static final GetGroupsResponseProto VOID_GET_GROUPS_RESPONSE = 
   GetGroupsResponseProto.newBuilder().build();
@@ -524,13 +545,17 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
 
 
   @Override
+  public CreateGroupResponseProto createGroup(RpcController controller,
+      CreateGroupRequestProto req) throws ServiceException {
   public AddGroupResponseProto addGroup(RpcController controller,
       AddGroupRequestProto req) throws ServiceException {
     try {
+      server.createGroup(req.getGroupname());
       server.addGroup(req.getGroupname());
     } catch (IOException e) {
       throw new ServiceException(e);
     }
+    return VOID_CREATE_GROUP_RESPONSE;
     return VOID_ADD_GROUP_RESPONSE;
   }
 
@@ -545,6 +570,16 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
     return VOID_DELETE_GROUP_RESPONSE;
   }
 
+  @Override
+  public CreateUserResponseProto createUser(RpcController controller,
+      CreateUserRequestProto req) throws ServiceException {
+    try {
+      server.createUser(req.getUser());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_CREATE_USER_RESPONSE;
+  }
   @Override
   public RemoveUserFromGroupResponseProto removeUserFromGroup(RpcController controller,
       RemoveUserFromGroupRequestProto req) throws ServiceException {
@@ -585,6 +620,30 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
     }
     return VOID_GET_ALL_GROUPS_RESPONSE;
   }
+
+
+  @Override
+  public DeleteUserResponseProto deleteUser(RpcController controller,
+      DeleteUserRequestProto req) throws ServiceException {
+    try {
+      server.deleteUser(req.getUser());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_DELETE_USER_RESPONSE;
+  }
+
+  @Override
+  public AddUsertoGroupResponseProto addUsertoGroup(RpcController controller,
+      AddUsertoGroupRequestProto req) throws ServiceException {
+    try {
+      server.addUsertoGroup(req.getUser(), req.getGroupname());
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return VOID_ADD_USERTO_GROUP_RESPONSE;
+  }
+
 
 
   @Override

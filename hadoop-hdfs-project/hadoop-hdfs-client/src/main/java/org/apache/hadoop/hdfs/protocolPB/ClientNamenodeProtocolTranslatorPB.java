@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs.protocolPB;
 
+import org.apache.hadoop.*;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -155,8 +157,12 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SaveNa
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBalancerBandwidthRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteUserRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddUsertoGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersRequestProto;
@@ -371,15 +377,19 @@ public class ClientNamenodeProtocolTranslatorPB implements
   }
 
   @Override
+  public void createGroup(String groupname)
   public void addGroup(String groupname)
       throws IOException {
+    CreateGroupRequestProto.Builder req = CreateGroupRequestProto.newBuilder()
     AddGroupRequestProto.Builder req = AddGroupRequestProto.newBuilder()
         .setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
+        rpcProxy.createGroup(null, req.build());
         rpcProxy.addGroup(null, req.build());
         setAsyncReturnValue();
       } else {
+        rpcProxy.createGroup(null, req.build());
         rpcProxy.addGroup(null, req.build());
       }
     } catch (ServiceException e) {
@@ -390,6 +400,8 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public void deleteGroup(String groupname)
       throws IOException {
+    DeleteGroupRequestProto.Builder req = DeleteGroupRequestProto.newBuilder()
+        .setGroupname(groupname);
     DeleteGroupRequestProto.Builder req = DeleteGroupRequestProto.newBuilder().setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
@@ -402,6 +414,58 @@ public class ClientNamenodeProtocolTranslatorPB implements
       throw ProtobufHelper.getRemoteException(e);
     }
   }
+
+  @Override
+  public void createUser(User user)
+      throws IOException {
+    CreateUserRequestProto.Builder req = CreateUserRequestProto.newBuilder()
+        .setUser(user);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.createUser(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.createUser(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  @Override
+  public void deleteUser(User user)
+      throws IOException {
+    DeleteUserRequestProto.Builder req = DeleteUserRequestProto.newBuilder()
+        .setUser(user);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.deleteUser(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.deleteUser(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  @Override
+  public void addUsertoGroup(User user, String groupname)
+      throws IOException {
+    AddUsertoGroupRequestProto.Builder req = AddUsertoGroupRequestProto.newBuilder()
+        .setUser(user).setGroupname(groupname);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.addUsertoGroup(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.addUsertoGroup(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
 
   @Override
   public void removeUserFromGroup(User user, String groupname)

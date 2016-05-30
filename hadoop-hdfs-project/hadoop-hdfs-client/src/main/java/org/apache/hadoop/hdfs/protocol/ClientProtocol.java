@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs.protocol;
 
+import org.apache.hadoop.*;
+
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
@@ -341,7 +343,7 @@ public interface ClientProtocol {
    * @throws IOException If an I/O error occurred
    */
   @Idempotent
-  void addGroup(String groupname)
+  void createGroup(String groupname)
       throws IOException;
 
 
@@ -360,6 +362,58 @@ public interface ClientProtocol {
    */
   @Idempotent
   void deleteGroup(String groupname)
+      throws IOException;
+
+  /**
+   * Add a user for hadoop.
+   *
+   * @throws org.apache.hadoop.security.AccessControlException If access is
+   *           denied
+   * @throws java.io.FileNotFoundException If file <code>src</code> is not found
+   * @throws org.apache.hadoop.hdfs.server.namenode.SafeModeException not
+   *           allowed in safemode
+   * @throws org.apache.hadoop.fs.UnresolvedLinkException If <code>src</code>
+   *           contains a symlink
+   * @throws SnapshotAccessControlException if path is in RO snapshot
+   * @throws IOException If an I/O error occurred
+   */
+  @Idempotent
+  void createUser(User user)
+      throws IOException;
+
+
+  /**
+   * Delete a user from hadoop.
+   *
+   * @throws org.apache.hadoop.security.AccessControlException If access is
+   *           denied
+   * @throws java.io.FileNotFoundException If file <code>src</code> is not found
+   * @throws org.apache.hadoop.hdfs.server.namenode.SafeModeException not
+   *           allowed in safemode
+   * @throws org.apache.hadoop.fs.UnresolvedLinkException If <code>src</code>
+   *           contains a symlink
+   * @throws SnapshotAccessControlException if path is in RO snapshot
+   * @throws IOException If an I/O error occurred
+   */
+  @Idempotent
+  void deleteUser(User user)
+      throws IOException;
+
+  /**
+   * Add a user to a group in hadoop.
+   *
+   * @throws org.apache.hadoop.security.AccessControlException If access is
+   *           denied
+   * @throws java.io.FileNotFoundException If file <code>src</code> is not found
+   * @throws org.apache.hadoop.hdfs.server.namenode.SafeModeException not
+   *           allowed in safemode
+   * @throws org.apache.hadoop.fs.UnresolvedLinkException If <code>src</code>
+   *           contains a symlink
+   * @throws SnapshotAccessControlException if path is in RO snapshot
+   * @throws IOException If an I/O error occurred
+   */
+  @Idempotent
+  void addUsertoGroup(User user, String group)
       throws IOException;
 
 

@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+import org.apache.hadoop.*;
+
 import static org.apache.hadoop.fs.CommonConfigurationKeys.IPC_MAXIMUM_DATA_LENGTH;
 import static org.apache.hadoop.fs.CommonConfigurationKeys.IPC_MAXIMUM_DATA_LENGTH_DEFAULT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HANDLER_COUNT_DEFAULT;
@@ -832,9 +834,11 @@ public class NameNodeRpcServer implements NamenodeProtocols {
 
 
 	@Override // ClientProtocol
+  public void createGroup(String groupname)
   public void addGroup(String groupname)
       throws IOException {
     checkNNStartup();
+    namesystem.createGroup(groupname);
     namesystem.addGroup(groupname);
   }
 
@@ -846,10 +850,30 @@ public class NameNodeRpcServer implements NamenodeProtocols {
   }
 
   @Override // ClientProtocol
+  public void createUser(User user)
+      throws IOException {
+    checkNNStartup();
+    namesystem.createUser(user);
+  }
+  @Override // ClientProtocol
   public void removeUserFromGroup(User user, String groupname)
       throws IOException {
     checkNNStartup();
     namesystem.removeUserFromGroup(user, groupname);
+  }
+
+  @Override // ClientProtocol
+  public void deleteUser(User user)
+      throws IOException {
+    checkNNStartup();
+    namesystem.deleteUser(user);
+  }
+
+  @Override // ClientProtocol
+  public void addUsertoGroup(User user, String groupname)
+      throws IOException {
+    checkNNStartup();
+    namesystem.addUsertoGroup(user, groupname);
   }
 
   @Override // ClientProtocol
