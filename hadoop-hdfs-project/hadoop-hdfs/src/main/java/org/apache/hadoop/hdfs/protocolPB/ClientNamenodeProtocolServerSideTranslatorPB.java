@@ -187,8 +187,6 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwn
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupResponseProto;
-import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
-import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserRequestProto;
@@ -547,16 +545,12 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   @Override
   public CreateGroupResponseProto createGroup(RpcController controller,
       CreateGroupRequestProto req) throws ServiceException {
-  public AddGroupResponseProto addGroup(RpcController controller,
-      AddGroupRequestProto req) throws ServiceException {
     try {
       server.createGroup(req.getGroupname());
-      server.addGroup(req.getGroupname());
     } catch (IOException e) {
       throw new ServiceException(e);
     }
     return VOID_CREATE_GROUP_RESPONSE;
-    return VOID_ADD_GROUP_RESPONSE;
   }
 
   @Override
