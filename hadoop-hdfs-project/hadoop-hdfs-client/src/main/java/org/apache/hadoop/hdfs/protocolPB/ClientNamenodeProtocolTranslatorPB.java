@@ -378,19 +378,15 @@ public class ClientNamenodeProtocolTranslatorPB implements
 
   @Override
   public void createGroup(String groupname)
-  public void addGroup(String groupname)
       throws IOException {
     CreateGroupRequestProto.Builder req = CreateGroupRequestProto.newBuilder()
-    AddGroupRequestProto.Builder req = AddGroupRequestProto.newBuilder()
         .setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.createGroup(null, req.build());
-        rpcProxy.addGroup(null, req.build());
         setAsyncReturnValue();
       } else {
         rpcProxy.createGroup(null, req.build());
-        rpcProxy.addGroup(null, req.build());
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
@@ -402,7 +398,6 @@ public class ClientNamenodeProtocolTranslatorPB implements
       throws IOException {
     DeleteGroupRequestProto.Builder req = DeleteGroupRequestProto.newBuilder()
         .setGroupname(groupname);
-    DeleteGroupRequestProto.Builder req = DeleteGroupRequestProto.newBuilder().setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.deleteGroup(null, req.build());
