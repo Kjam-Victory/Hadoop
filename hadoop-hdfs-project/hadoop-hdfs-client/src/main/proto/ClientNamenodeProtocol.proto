@@ -154,12 +154,10 @@ message SetOwnerResponseProto { // void response
 
 
 message CreateGroupRequestProto {
-message AddGroupRequestProto {
   required string groupname = 1;
 }
 
 message CreateGroupResponseProto { // void response
-message AddGroupResponseProto { // void response
 }
 
 message DeleteGroupRequestProto {
@@ -197,7 +195,7 @@ message AddUsertoGroupResponseProto { // void response
 }
 
 message RemoveUserFromGroupRequestProto {
-  required User user = 1;
+  required UserProto user = 1;
   required string groupname = 2;
 }
 
@@ -205,7 +203,7 @@ message RemoveUserFromGroupResponseProto { // void response
 }
 
 message GetGroupsRequestProto {
-  required User user = 1;
+  required UserProto user = 1;
 }
 
 message GetGroupsResponseProto { // void response
@@ -840,8 +838,6 @@ service ClientNamenodeProtocol {
 
   rpc createGroup(CreateGroupRequestProto) 
 			returns(CreateGroupResponseProto);
-  rpc addGroup(AddGroupRequestProto) 
-			returns(AddGroupResponseProto);
   rpc deleteGroup(DeleteGroupRequestProto) 
       returns(DeleteGroupResponseProto);
   rpc createUser(CreateUserRequestProto) 
@@ -850,6 +846,15 @@ service ClientNamenodeProtocol {
       returns(DeleteUserResponseProto);
   rpc addUsertoGroup(AddUsertoGroupRequestProto) 
       returns(AddUsertoGroupResponseProto);
+
+  rpc removeUserFromGroup(RemoveUserFromGroupRequestProto) 
+      returns(RemoveUserFromGroupResponseProto);
+  rpc getGroups(GetGroupsRequestProto) 
+      returns(GetGroupsResponseProto);
+  rpc getAllUsers(GetAllUsersRequestProto) 
+      returns(GetAllUsersResponseProto);
+  rpc getAllGroups(GetAllGroupsRequestProto) 
+      returns(GetAllGroupsResponseProto);
 
 
   rpc setOwner(SetOwnerRequestProto) 
