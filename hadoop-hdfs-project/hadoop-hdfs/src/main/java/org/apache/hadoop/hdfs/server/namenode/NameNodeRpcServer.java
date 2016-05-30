@@ -835,11 +835,9 @@ public class NameNodeRpcServer implements NamenodeProtocols {
 
 	@Override // ClientProtocol
   public void createGroup(String groupname)
-  public void addGroup(String groupname)
       throws IOException {
     checkNNStartup();
     namesystem.createGroup(groupname);
-    namesystem.addGroup(groupname);
   }
 
   @Override // ClientProtocol
@@ -855,14 +853,8 @@ public class NameNodeRpcServer implements NamenodeProtocols {
     checkNNStartup();
     namesystem.createUser(user);
   }
-  @Override // ClientProtocol
-  public void removeUserFromGroup(User user, String groupname)
-      throws IOException {
-    checkNNStartup();
-    namesystem.removeUserFromGroup(user, groupname);
-  }
 
-  @Override // ClientProtocol
+    @Override // ClientProtocol
   public void deleteUser(User user)
       throws IOException {
     checkNNStartup();
@@ -874,6 +866,14 @@ public class NameNodeRpcServer implements NamenodeProtocols {
       throws IOException {
     checkNNStartup();
     namesystem.addUsertoGroup(user, groupname);
+  }
+
+
+  @Override // ClientProtocol
+  public void removeUserFromGroup(User user, String groupname)
+      throws IOException {
+    checkNNStartup();
+    namesystem.removeUserFromGroup(user, groupname);
   }
 
   @Override // ClientProtocol

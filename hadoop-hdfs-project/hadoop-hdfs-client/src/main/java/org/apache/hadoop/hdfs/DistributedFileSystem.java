@@ -1521,7 +1521,6 @@ public class DistributedFileSystem extends FileSystem {
 
   @Override
   public void createGroup(String group
-  public void addGroup(String group
       ) throws IOException {
     statistics.incrementWriteOps(1);
       Path absF = null;
@@ -1530,7 +1529,6 @@ public class DistributedFileSystem extends FileSystem {
         public Void doCall(final Path p)
             throws IOException, UnresolvedLinkException {
           dfs.createGroup(group);
-          dfs.addGroup(group);
           return null;
         }
 
@@ -1538,7 +1536,6 @@ public class DistributedFileSystem extends FileSystem {
         public Void next(final FileSystem fs, final Path p)
             throws IOException {
           fs.createGroup(group);
-          fs.addGroup(group);
           return null;
         }
       }.resolve(this, absF);
