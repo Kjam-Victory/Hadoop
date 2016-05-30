@@ -2376,7 +2376,6 @@ public abstract class FileSystem extends Configured implements Closeable {
    * @param group Group name
    */
   public void createGroup(String group
-  public void addGroup(String group
       ) throws IOException {
   }
 
