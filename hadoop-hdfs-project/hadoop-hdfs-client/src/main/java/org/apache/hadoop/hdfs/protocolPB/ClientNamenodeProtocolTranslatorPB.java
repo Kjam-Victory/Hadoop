@@ -158,6 +158,7 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBal
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteUserRequestProto;
@@ -166,6 +167,7 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.Remove
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.UserProto;
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
@@ -479,48 +481,96 @@ public class ClientNamenodeProtocolTranslatorPB implements
   }
 
   @Override
-  public void getGroups(User user)
+  public List<String> getGroups(User user)
       throws IOException {
     GetGroupsRequestProto.Builder req = GetGroupsRequestProto.newBuilder().setUser(user);
 
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.getGroups(null, req.build());
-        setAsyncReturnValue();
+        final AsyncGet<Message, Exception> asyncReturnMessage
+            = ProtobufRpcEngine.getAsyncReturnMessage();
+        final AsyncGet<List<String>, Exception> asyncGet =
+            new AsyncGet<List<String>, Exception>() {
+              @Override
+              public List<String> get(long timeout, TimeUnit unit)
+                  throws Exception {
+                return (GetGroupsResponseProto) asyncReturnMessage
+                        .get(timeout, unit).getGroupnameList();
+              }
+            };
+        ASYNC_RETURN_VALUE.set(asyncGet);
+        return null;
       } else {
-        rpcProxy.getGroups(null, req.build());
+        rpcProxy.getGroups(null, req.build()).getGroupnameList();
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
     }
   }
 
-  public void getAllUsers()
+  public List<User> getAllUsers()
       throws IOException {
     GetAllUsersRequestProto.Builder req = GetAllUsersRequestProto.newBuilder();
 
     try {
       if (Client.isAsynchronousMode()) {
-        rpcProxy.getAllUsers(null, req.build());
-        setAsyncReturnValue();
+        rpcProxy.getAllUsers(null, req.build());           
+        final AsyncGet<Message, Exception> asyncReturnMessage
+            = ProtobufRpcEngine.getAsyncReturnMessage();
+        final AsyncGet<List<String>, Exception> asyncGet =
+            new AsyncGet<List<String>, Exception>() {
+              @Override
+              public List<User> get(long timeout, TimeUnit unit)
+                  throws Exception {
+                List<UserProto> list = (GetAllUsersResponseProto) asyncReturnMessage
+                        .get(timeout, unit).getUserList();
+                List<User> ret = new List<User>();
+        		for(UserProto p : list) {
+        			ret.add(new User(p.getName(), p.getIp()));
+        		}
+        		return ret;     
+              }
+            };
+        ASYNC_RETURN_VALUE.set(asyncGet);
+        return null;
       } else {
-        rpcProxy.getAllUsers(null, req.build());
+        List<UserProto> list = rpcProxy.getAllUsers(null, req.build()).getUserList();
+        List<User> ret = new List<User>();
+        for(UserProto p : list) {
+        	ret.add(new User(p.getName(), p.getIp()));
+        }
+        return ret;
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
     }
+
+
   }
 
-  public void getAllGroups()
+  public List<String> getAllGroups()
       throws IOException {
     GetAllGroupsRequestProto.Builder req = GetAllGroupsRequestProto.newBuilder();
 
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.getAllGroups(null, req.build());
-        setAsyncReturnValue();
+        final AsyncGet<Message, Exception> asyncReturnMessage
+            = ProtobufRpcEngine.getAsyncReturnMessage();
+        final AsyncGet<List<String>, Exception> asyncGet =
+            new AsyncGet<List<String>, Exception>() {
+              @Override
+              public List<String> get(long timeout, TimeUnit unit)
+                  throws Exception {
+                return (GetAllGroupsResponseProto) asyncReturnMessage
+                        .get(timeout, unit).getGroupnameList();
+              }
+            };
+        ASYNC_RETURN_VALUE.set(asyncGet);
+        return null;
       } else {
-        rpcProxy.getAllGroups(null, req.build());
+        rpcProxy.getAllGroups(null, req.build()).getGroupnameList();
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);

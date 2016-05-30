@@ -321,8 +321,7 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   AddUsertoGroupResponseProto.newBuilder().build();
 
 
-  private static final GetGroupsResponseProto VOID_GET_GROUPS_RESPONSE = 
-  GetGroupsResponseProto.newBuilder().build();
+
 
   private static final GetAllUsersResponseProto VOID_GET_ALL_USERS_RESPONSE = 
   GetAllUsersResponseProto.newBuilder().build();
@@ -585,32 +584,47 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
 
   public GetGroupsResponseProto getGroups(RpcController controller,
       GetGroupsRequestProto req) throws ServiceException {
+  	List<String> groupNames = null;
     try {
-      server.getGroups(req.getUser());
+      groupNames = server.getGroups(req.getUser());
     } catch (IOException e) {
       throw new ServiceException(e);
     }
-    return VOID_GET_GROUPS_RESPONSE;
+    // List<String> groupNames = new List<String>();
+    // groupNames.add("TestGroup1");
+    // groupNames.add("TestGroup2");
+    // groupNames.add("TestGroup3");
+  	return GetGroupsResponseProto.newBuilder().addAllGroupname(groupNames).build();    
   }
 
   public GetAllUsersResponseProto getAllUsers(RpcController controller,
       GetAllUsersRequestProto req) throws ServiceException {
+  	List<User> userNames = null;
     try {
-      server.getAllUsers();
+      userNames = server.getAllUsers();
     } catch (IOException e) {
       throw new ServiceException(e);
     }
-    return VOID_GET_ALL_USERS_RESPONSE;
+    // List<User> userNames = new List<User>();
+    // userNames.add("TestUser1");
+    // userNames.add("TestUser2");
+    // userNames.add("TestUser3");
+    return GetAllUsersResponseProto.newBuilder().addAllUser(userNames).build();    
   }
 
   public GetAllGroupsResponseProto getAllGroups(RpcController controller,
       GetAllGroupsRequestProto req) throws ServiceException {
+  	List<String> groupNames = null;
     try {
-      server.getAllGroups();
+       groupNames = server.getAllGroups();
     } catch (IOException e) {
       throw new ServiceException(e);
     }
-    return VOID_GET_ALL_GROUPS_RESPONSE;
+    // List<String> groupNames = new List<String>();
+    // groupNames.add("TestGroup1");
+    // groupNames.add("TestGroup2");
+    // groupNames.add("TestGroup3");
+  	return GetGroupsResponseProto.newBuilder().addAllGroupname(groupNames).build(); 
   }
 
 

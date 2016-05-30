@@ -1653,68 +1653,62 @@ public class DistributedFileSystem extends FileSystem {
   }  
 
   @Override
-  public void getGroups(User user
+  public List<String> getGroups(User user
       ) throws IOException {
     statistics.incrementWriteOps(1);
       Path absF = null;
-      new FileSystemLinkResolver<Void>() {
+      new FileSystemLinkResolver<List<String>>() {
         @Override
-        public Void doCall(final Path p)
+        public List<String> doCall(final Path p)
             throws IOException, UnresolvedLinkException {
-          dfs.getGroups(user);
-          return null;
+          return dfs.getGroups(user);          
         }
 
         @Override
-        public Void next(final FileSystem fs, final Path p)
+        public List<String> next(final FileSystem fs, final Path p)
             throws IOException {
-          fs.getGroups(user);
-          return null;
+          return fs.getGroups(user);          
         }
       }.resolve(this, absF);
   }
 
   @Override
-  public void getAllUsers(
+  public List<User> getAllUsers(
       ) throws IOException {
     statistics.incrementWriteOps(1);
       Path absF = null;
-      new FileSystemLinkResolver<Void>() {
+      new FileSystemLinkResolver<List<User>>() {
         @Override
-        public Void doCall(final Path p)
+        public List<User> doCall(final Path p)
             throws IOException, UnresolvedLinkException {
-          dfs.getAllUsers();
-          return null;
+          return dfs.getAllUsers();          
         }
 
         @Override
-        public Void next(final FileSystem fs, final Path p)
+        public List<User> next(final FileSystem fs, final Path p)
             throws IOException {
-          fs.getAllUsers();
-          return null;
+          return fs.getAllUsers();          
         }
       }.resolve(this, absF);
   }
 
 
   @Override
-  public void getAllGroups(
+  public List<String> getAllGroups(
       ) throws IOException {
     statistics.incrementWriteOps(1);
       Path absF = null;
-      new FileSystemLinkResolver<Void>() {
+      new FileSystemLinkResolver<List<String>>() {
         @Override
-        public Void doCall(final Path p)
+        public List<String> doCall(final Path p)
             throws IOException, UnresolvedLinkException {
-          dfs.getAllGroups();
-          return null;
+          return fs.getAllGroups();          
         }
 
         @Override
-        public Void next(final FileSystem fs, final Path p)
+        public List<String> next(final FileSystem fs, final Path p)
             throws IOException {
-          fs.getAllGroups();
-          return null;
+          return fs.getAllGroups();          
         }
       }.resolve(this, absF);
   }

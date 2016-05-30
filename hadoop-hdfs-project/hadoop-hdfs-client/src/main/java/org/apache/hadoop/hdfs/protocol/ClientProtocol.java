@@ -449,7 +449,7 @@ public interface ClientProtocol {
    * @throws IOException If an I/O error occurred
    */
   @Idempotent
-  void getGroups(User user)
+  List<String> getGroups(User user)
       throws IOException;
 
 
@@ -467,7 +467,7 @@ public interface ClientProtocol {
    * @throws IOException If an I/O error occurred
    */
   @Idempotent
-  void getAllUsers()
+  List<User> getAllUsers()
       throws IOException;
 
   /**
@@ -484,7 +484,7 @@ public interface ClientProtocol {
    * @throws IOException If an I/O error occurred
    */
   @Idempotent
-  void getAllGroups()
+  List<String> getAllGroups()
       throws IOException;
 
 

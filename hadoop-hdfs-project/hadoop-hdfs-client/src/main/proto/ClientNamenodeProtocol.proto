@@ -206,19 +206,22 @@ message GetGroupsRequestProto {
   required UserProto user = 1;
 }
 
-message GetGroupsResponseProto { // void response
+message GetGroupsResponseProto { 
+  repeated string groupname = 1;
 }
 
-message GetAllUsersRequestProto { //void response
+message GetAllUsersRequestProto { 
 }
 
-message GetAllUsersResponseProto { //void response
+message GetAllUsersResponseProto {
+  repeated UserProto user = 1;
 }
 
-message GetAllGroupsRequestProto { // void response
+message GetAllGroupsRequestProto { 
 }
 
-message GetAllGroupsResponseProto { // void response
+message GetAllGroupsResponseProto { 
+  repeated string groupname = 1;
 }
 
 

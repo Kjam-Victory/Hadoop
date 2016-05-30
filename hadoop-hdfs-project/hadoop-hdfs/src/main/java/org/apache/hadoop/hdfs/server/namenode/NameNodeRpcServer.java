@@ -877,24 +877,24 @@ public class NameNodeRpcServer implements NamenodeProtocols {
   }
 
   @Override // ClientProtocol
-  public void getGroups(User user)
+  public List<String> getGroups(User user)
       throws IOException {
     checkNNStartup();
-    namesystem.getGroups(user);
+    return namesystem.getGroups(user);
   }
 
   @Override // ClientProtocol
-  public void getAllUsers()
+  public List<User> getAllUsers()
       throws IOException {
     checkNNStartup();
-    namesystem.getAllUsers();
+    return namesystem.getAllUsers();
   }
 
   @Override // ClientProtocol
-  public void getAllGroups()
+  public List<String> getAllGroups()
       throws IOException {
     checkNNStartup();
-    namesystem.getAllGroups();
+    return namesystem.getAllGroups();
   }
 
 

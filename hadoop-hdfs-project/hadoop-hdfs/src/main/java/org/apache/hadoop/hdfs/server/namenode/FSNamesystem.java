@@ -1683,7 +1683,6 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
    * @throws IOException
    */
   void createGroup(String group)
-  void addGroup(String group)
       throws IOException {
     //HdfsFileStatus auditStat;
     //checkOperation(OperationCategory.WRITE);
@@ -1851,15 +1850,14 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
    * Get Group to hdfs.
    * @throws IOException
    */
-  void getGroups(User user)
+  List<String> getGroups(User user)
       throws IOException {
     //HdfsFileStatus auditStat;
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
       //checkOperation(OperationCategory.WRITE);
-      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));
-      w.write(group+"\n");
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));      
       w.close();
       System.out.println("Success");
       //checkNameNodeSafeMode("Cannot set owner for " + src);
@@ -1873,6 +1871,11 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     }
     //getEditLog().logSync();
     //logAuditEvent(true, "addGroup", group, null, auditStat);
+    List<String> groupNames = new List<String>();
+    groupNames.add("TestGroup1");
+    groupNames.add("TestGroup2");
+    groupNames.add("TestGroup3");
+    return groupNames;
   }
 
 
@@ -1880,15 +1883,14 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
    * Get all users to hdfs.
    * @throws IOException
    */
-  void getAllUsers()
+  List<User> getAllUsers()
       throws IOException {
     //HdfsFileStatus auditStat;
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
       //checkOperation(OperationCategory.WRITE);
-      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));
-      w.write(group+"\n");
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));      
       w.close();
       System.out.println("Success");
       //checkNameNodeSafeMode("Cannot set owner for " + src);
@@ -1900,23 +1902,28 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     } finally {
       //writeUnlock();
     }
+
     //getEditLog().logSync();
     //logAuditEvent(true, "addGroup", group, null, auditStat);
+    List<User> userNames = new List<User>();
+    userNames.add("TestUser1");
+    userNames.add("TestUser2");
+    userNames.add("TestUser3");
+    return userNames;
   }
 
   /**
    * Get all groups to hdfs.
    * @throws IOException
    */
-  void getAllGroups()
+  List<String> getAllGroups()
       throws IOException {
     //HdfsFileStatus auditStat;
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
       //checkOperation(OperationCategory.WRITE);
-      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllGroups.txt"));
-      w.write(group+"\n");
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllGroups.txt"));      
       w.close();
       System.out.println("Success");
       //checkNameNodeSafeMode("Cannot set owner for " + src);
@@ -1930,6 +1937,11 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     }
     //getEditLog().logSync();
     //logAuditEvent(true, "addGroup", group, null, auditStat);
+    List<String> groupNames = new List<String>();
+    groupNames.add("TestGroup1");
+    groupNames.add("TestGroup2");
+    groupNames.add("TestGroup3");
+    return groupNames;
   }
   /////////////////////////////////////////////////////////
   //

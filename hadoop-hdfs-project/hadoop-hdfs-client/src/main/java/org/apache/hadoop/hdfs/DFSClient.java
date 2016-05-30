@@ -1919,11 +1919,11 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
    *
    * @see ClientProtocol#setOwner(String, String, String)
    */
-  public void getGroups(User user)
+  public List<String> getGroups(User user)
       throws IOException {
     checkOpen();
     try (TraceScope ignored = newPathTraceScope("getGroups", null)) {
-      namenode.getGroups(user);
+      return namenode.getGroups(user);
     } catch (RemoteException re) {
       throw re.unwrapRemoteException(AccessControlException.class,
           FileNotFoundException.class,
@@ -1931,6 +1931,7 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
           UnresolvedPathException.class,
           SnapshotAccessControlException.class);
     }
+    return null;
   }
 
   /**
@@ -1939,11 +1940,11 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
    *
    * @see ClientProtocol#setOwner(String, String, String)
    */
-  public void getAllUsers()
+  public List<User> getAllUsers()
       throws IOException {
     checkOpen();
     try (TraceScope ignored = newPathTraceScope("getAllUsers", null)) {
-      namenode.getAllUsers();
+      return namenode.getAllUsers();
     } catch (RemoteException re) {
       throw re.unwrapRemoteException(AccessControlException.class,
           FileNotFoundException.class,
@@ -1951,6 +1952,7 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
           UnresolvedPathException.class,
           SnapshotAccessControlException.class);
     }
+    return null;
   }
 
   /**
@@ -1959,11 +1961,11 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
    *
    * @see ClientProtocol#setOwner(String, String, String)
    */
-  public void getAllGroups()
+  public List<String> getAllGroups()
       throws IOException {
     checkOpen();
     try (TraceScope ignored = newPathTraceScope("getAllGroups", null)) {
-      namenode.getAllGroups();
+      return namenode.getAllGroups();
     } catch (RemoteException re) {
       throw re.unwrapRemoteException(AccessControlException.class,
           FileNotFoundException.class,
@@ -1971,6 +1973,7 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
           UnresolvedPathException.class,
           SnapshotAccessControlException.class);
     }
+    return null;
   }
 
   /**

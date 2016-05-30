@@ -2424,7 +2424,7 @@ public abstract class FileSystem extends Configured implements Closeable {
    * get groups from hdfs.
    * @param user user name
    */
-  public void getGroups(User user
+  public List<String> getGroups(User user
       ) throws IOException {
   }
 
@@ -2432,7 +2432,7 @@ public abstract class FileSystem extends Configured implements Closeable {
    * get users from hdfs.
    * @param 
    */
-  public void getAllUsers(
+  public List<User> getAllUsers(
       ) throws IOException {
   }
 
@@ -2440,7 +2440,7 @@ public abstract class FileSystem extends Configured implements Closeable {
    * get all groups from hdfs.
    * @param 
    */
-  public void getAllGroups(
+  public List<String> getAllGroups(
       ) throws IOException {
   }
 
