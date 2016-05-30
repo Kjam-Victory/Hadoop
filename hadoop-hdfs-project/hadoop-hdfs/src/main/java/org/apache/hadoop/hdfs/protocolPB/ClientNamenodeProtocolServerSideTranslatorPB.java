@@ -305,8 +305,6 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
 
   private static final CreateGroupResponseProto VOID_CREATE_GROUP_RESPONSE = 
   CreateGroupResponseProto.newBuilder().build();
-  private static final AddGroupResponseProto VOID_ADD_GROUP_RESPONSE = 
-  AddGroupResponseProto.newBuilder().build();
 
   private static final DeleteGroupResponseProto VOID_DELETE_GROUP_RESPONSE = 
   DeleteGroupResponseProto.newBuilder().build();
