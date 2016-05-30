@@ -1,7 +1,7 @@
 package org.apache.hadoop.database;
 import java.util.*; 
 
- class User {
+ public class User {
 	private String name;
 	private int ip;
 	public User(String name, int ip) {
