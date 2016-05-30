@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs;
 
+import org.apache.hadoop.*;
+
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_SECURITY_CRYPTO_CODEC_CLASSES_KEY_PREFIX;
 import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_READS;
 import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_WRITES;
@@ -1795,11 +1797,11 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
    *
    * @see ClientProtocol#setOwner(String, String, String)
    */
-  public void addGroup(String groupname)
+  public void createGroup(String groupname)
       throws IOException {
     checkOpen();
-    try (TraceScope ignored = newPathTraceScope("addGroup", null)) {
-      namenode.addGroup(groupname);
+    try (TraceScope ignored = newPathTraceScope("createGroup", null)) {
+      namenode.createGroup(groupname);
     } catch (RemoteException re) {
       throw re.unwrapRemoteException(AccessControlException.class,
           FileNotFoundException.class,
@@ -1820,6 +1822,68 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
     checkOpen();
     try (TraceScope ignored = newPathTraceScope("deleteGroup", null)) {
       namenode.deleteGroup(groupname);
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
+   * Create User
+   * @param user user name.
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void createUser(User user)
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("createUser", null)) {
+      namenode.createUser(user);
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+
+  /**
+   * Delete User
+   * @param user user name.
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void deleteUser(User user)
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("deleteUser", null)) {
+      namenode.deleteUser(user);
+    } catch (RemoteException re) {
+      throw re.unwrapRemoteException(AccessControlException.class,
+          FileNotFoundException.class,
+          SafeModeException.class,
+          UnresolvedPathException.class,
+          SnapshotAccessControlException.class);
+    }
+  }
+  
+
+  /**
+   * Add user to group
+   * @param user user name.
+   * @param group group name.
+   *
+   * @see ClientProtocol#setOwner(String, String, String)
+   */
+  public void addUsertoGroup(User user, String groupname)
+      throws IOException {
+    checkOpen();
+    try (TraceScope ignored = newPathTraceScope("addUsertoGroup", null)) {
+      namenode.addUsertoGroup(user, groupname);
     } catch (RemoteException re) {
       throw re.unwrapRemoteException(AccessControlException.class,
           FileNotFoundException.class,

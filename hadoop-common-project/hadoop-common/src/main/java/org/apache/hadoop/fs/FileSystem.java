@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.fs;
 
+import org.apache.hadoop.*;
+
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -2373,7 +2375,7 @@ public abstract class FileSystem extends Configured implements Closeable {
    * Add group to hdfs.
    * @param group Group name
    */
-  public void addGroup(String group
+  public void createGroup(String group
       ) throws IOException {
   }
 
@@ -2382,6 +2384,31 @@ public abstract class FileSystem extends Configured implements Closeable {
    * @param group Group name
    */
   public void deleteGroup(String group
+      ) throws IOException {
+  }
+
+  /**
+   * Add user to hdfs.
+   * @param user User name
+   */
+  public void createUser(User user
+      ) throws IOException {
+  }
+
+  /**
+   * Delete user from hdfs.
+   * @param user User name
+   */
+  public void deleteUser(User user
+      ) throws IOException {
+  }
+
+  /**
+   * Add user into group
+   * @param user User name
+   * @param group Group name
+   */
+  public void addUsertoGroup(User user, String group
       ) throws IOException {
   }
 

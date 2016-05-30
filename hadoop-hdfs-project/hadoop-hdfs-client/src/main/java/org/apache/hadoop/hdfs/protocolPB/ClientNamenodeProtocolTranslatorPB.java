@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs.protocolPB;
 
+import org.apache.hadoop.*;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -155,8 +157,11 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SaveNa
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBalancerBandwidthRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 
-import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteUserRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddUsertoGroupRequestProto;
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
@@ -367,16 +372,16 @@ public class ClientNamenodeProtocolTranslatorPB implements
   }
 
   @Override
-  public void addGroup(String groupname)
+  public void createGroup(String groupname)
       throws IOException {
-    AddGroupRequestProto.Builder req = AddGroupRequestProto.newBuilder()
+    CreateGroupRequestProto.Builder req = CreateGroupRequestProto.newBuilder()
         .setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
-        rpcProxy.addGroup(null, req.build());
+        rpcProxy.createGroup(null, req.build());
         setAsyncReturnValue();
       } else {
-        rpcProxy.addGroup(null, req.build());
+        rpcProxy.createGroup(null, req.build());
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
@@ -399,6 +404,58 @@ public class ClientNamenodeProtocolTranslatorPB implements
       throw ProtobufHelper.getRemoteException(e);
     }
   }
+
+  @Override
+  public void createUser(User user)
+      throws IOException {
+    CreateUserRequestProto.Builder req = CreateUserRequestProto.newBuilder()
+        .setUser(user);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.createUser(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.createUser(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  @Override
+  public void deleteUser(User user)
+      throws IOException {
+    DeleteUserRequestProto.Builder req = DeleteUserRequestProto.newBuilder()
+        .setUser(user);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.deleteUser(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.deleteUser(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
+  @Override
+  public void addUsertoGroup(User user, String groupname)
+      throws IOException {
+    AddUsertoGroupRequestProto.Builder req = AddUsertoGroupRequestProto.newBuilder()
+        .setUser(user).setGroupname(groupname);
+    try {
+      if (Client.isAsynchronousMode()) {
+        rpcProxy.addUsertoGroup(null, req.build());
+        setAsyncReturnValue();
+      } else {
+        rpcProxy.addUsertoGroup(null, req.build());
+      }
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+
 
   @Override
   public void setPermission(String src, FsPermission permission)

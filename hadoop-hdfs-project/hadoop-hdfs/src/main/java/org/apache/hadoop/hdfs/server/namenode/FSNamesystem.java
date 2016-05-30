@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+import org.apache.hadoop.*;
+
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_TRASH_INTERVAL_DEFAULT;
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_TRASH_INTERVAL_KEY;
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_CALLER_CONTEXT_ENABLED_DEFAULT;
@@ -1680,7 +1682,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
    * Add Group to hdfs.
    * @throws IOException
    */
-  void addGroup(String group)
+  void createGroup(String group)
       throws IOException {
     //HdfsFileStatus auditStat;
     //checkOperation(OperationCategory.WRITE);
@@ -1717,6 +1719,90 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
       //checkOperation(OperationCategory.WRITE);
       FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteGroup.txt"));
       w.write(group+"\n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
+  /**
+   * Add User to hdfs.
+   * @throws IOException
+   */
+  void createUser(User user)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/createUser.txt"));
+      w.write("hahaha \n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
+   /**
+   * Delete User to hdfs.
+   * @throws IOException
+   */
+  void deleteUser(User user)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteUser.txt"));
+      w.write("hahaha \n");
+      w.close();
+      System.out.println("Success");
+      //checkNameNodeSafeMode("Cannot set owner for " + src);
+      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
+    } catch (AccessControlException e) {
+      System.out.println("Fail");
+			//logAuditEvent(false, "addGroup", group);
+      throw e;
+    } finally {
+      //writeUnlock();
+    }
+    //getEditLog().logSync();
+    //logAuditEvent(true, "addGroup", group, null, auditStat);
+  }
+
+  /**
+   * Add User to Group in hdfs.
+   * @throws IOException
+   */
+  void addUsertoGroup(User user, String group)
+      throws IOException {
+    //HdfsFileStatus auditStat;
+    //checkOperation(OperationCategory.WRITE);
+    //writeLock();
+    try {
+      //checkOperation(OperationCategory.WRITE);
+      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
+      w.write("hahaha \n");
       w.close();
       System.out.println("Success");
       //checkNameNodeSafeMode("Cannot set owner for " + src);
