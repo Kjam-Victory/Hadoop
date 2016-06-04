@@ -22,9 +22,9 @@ set -e               # exit on error
 
 cd "$(dirname "$0")" # connect to root
 
-USER="tongtong"
+USER="kai_jiang"
 
-docker build -t hadoop-build dev-support/docker
+#docker build -t hadoop-build dev-support/docker
 
 if [ "$(uname -s)" == "Linux" ]; then
   USER_NAME=${SUDO_USER:=$USER}

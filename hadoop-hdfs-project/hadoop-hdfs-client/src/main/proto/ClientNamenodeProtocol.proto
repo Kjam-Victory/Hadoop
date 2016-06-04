@@ -169,7 +169,7 @@ message DeleteGroupResponseProto { // void response
 
 message UserProto {
   required string name = 1;
-  required uint32 ip = 2;
+  required uint64 ip = 2;
 }
 
 message CreateUserRequestProto {

@@ -17,7 +17,7 @@
  */
 package org.apache.hadoop.hdfs.protocol;
 
-import org.apache.hadoop.*;
+import org.apache.hadoop.database.*;
 
 import java.io.IOException;
 import java.util.EnumSet;

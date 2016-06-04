@@ -17,7 +17,7 @@
  */
 package org.apache.hadoop.fs;
 
-import org.apache.hadoop.*;
+import org.apache.hadoop.database.*;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
@@ -2425,8 +2425,10 @@ public abstract class FileSystem extends Configured implements Closeable {
    * @param user user name
    */
   public List<String> getGroups(User user
-      ) throws IOException {
-  }
+      ) throws IOException { 
+    throw new UnsupportedOperationException(getClass().getSimpleName()
+        + " doesn't support getGroups");
+	}
 
   /**
    * get users from hdfs.
@@ -2434,6 +2436,8 @@ public abstract class FileSystem extends Configured implements Closeable {
    */
   public List<User> getAllUsers(
       ) throws IOException {
+    throw new UnsupportedOperationException(getClass().getSimpleName()
+        + " doesn't support getAllUsers");
   }
 
   /**
@@ -2442,6 +2446,8 @@ public abstract class FileSystem extends Configured implements Closeable {
    */
   public List<String> getAllGroups(
       ) throws IOException {
+    throw new UnsupportedOperationException(getClass().getSimpleName()
+        + " doesn't support getAllGroups");
   }
 
   /**

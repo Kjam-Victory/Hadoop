@@ -18,7 +18,7 @@
 
 package org.apache.hadoop.hdfs;
 
-import org.apache.hadoop.*;
+import org.apache.hadoop.database.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -1655,9 +1655,9 @@ public class DistributedFileSystem extends FileSystem {
   @Override
   public List<String> getGroups(User user
       ) throws IOException {
-    statistics.incrementWriteOps(1);
-      Path absF = null;
-      new FileSystemLinkResolver<List<String>>() {
+     statistics.incrementWriteOps(1);
+     Path absF = null;
+     return new FileSystemLinkResolver<List<String>>() {
         @Override
         public List<String> doCall(final Path p)
             throws IOException, UnresolvedLinkException {
@@ -1677,7 +1677,7 @@ public class DistributedFileSystem extends FileSystem {
       ) throws IOException {
     statistics.incrementWriteOps(1);
       Path absF = null;
-      new FileSystemLinkResolver<List<User>>() {
+      return new FileSystemLinkResolver<List<User>>() {
         @Override
         public List<User> doCall(final Path p)
             throws IOException, UnresolvedLinkException {
@@ -1698,11 +1698,11 @@ public class DistributedFileSystem extends FileSystem {
       ) throws IOException {
     statistics.incrementWriteOps(1);
       Path absF = null;
-      new FileSystemLinkResolver<List<String>>() {
+      return new FileSystemLinkResolver<List<String>>() {
         @Override
         public List<String> doCall(final Path p)
             throws IOException, UnresolvedLinkException {
-          return fs.getAllGroups();          
+          return dfs.getAllGroups();          
         }
 
         @Override

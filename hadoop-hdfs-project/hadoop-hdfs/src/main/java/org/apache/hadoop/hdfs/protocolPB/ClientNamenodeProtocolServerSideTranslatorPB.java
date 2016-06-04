@@ -17,11 +17,12 @@
  */
 package org.apache.hadoop.hdfs.protocolPB;
 
-import org.apache.hadoop.*;
+import org.apache.hadoop.database.*;
 
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
@@ -203,6 +204,7 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAll
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.UserProto;
 
 
 
@@ -565,7 +567,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   public CreateUserResponseProto createUser(RpcController controller,
       CreateUserRequestProto req) throws ServiceException {
     try {
-      server.createUser(req.getUser());
+			UserProto userProto = req.getUser();
+      User user = new User(userProto.getName(), userProto.getIp());
+			server.createUser(user);
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -575,7 +579,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   public RemoveUserFromGroupResponseProto removeUserFromGroup(RpcController controller,
       RemoveUserFromGroupRequestProto req) throws ServiceException {
     try {
-      server.removeUserFromGroup(req.getUser(),req.getGroupname());
+			UserProto userProto = req.getUser();
+      User user = new User(userProto.getName(), userProto.getIp());
+      server.removeUserFromGroup(user,req.getGroupname());
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -586,7 +592,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
       GetGroupsRequestProto req) throws ServiceException {
   	List<String> groupNames = null;
     try {
-      groupNames = server.getGroups(req.getUser());
+			UserProto userProto = req.getUser();
+      User user = new User(userProto.getName(), userProto.getIp());
+      groupNames = server.getGroups(user);
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -599,9 +607,13 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
 
   public GetAllUsersResponseProto getAllUsers(RpcController controller,
       GetAllUsersRequestProto req) throws ServiceException {
-  	List<User> userNames = null;
+  	List<UserProto> userNames = new ArrayList<UserProto>();
     try {
-      userNames = server.getAllUsers();
+			for(User user: server.getAllUsers()){
+				UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
+				userNames.add(userProto);
+			}
+    	return GetAllUsersResponseProto.newBuilder().addAllUser(userNames).build();    
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -609,7 +621,6 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
     // userNames.add("TestUser1");
     // userNames.add("TestUser2");
     // userNames.add("TestUser3");
-    return GetAllUsersResponseProto.newBuilder().addAllUser(userNames).build();    
   }
 
   public GetAllGroupsResponseProto getAllGroups(RpcController controller,
@@ -624,7 +635,7 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
     // groupNames.add("TestGroup1");
     // groupNames.add("TestGroup2");
     // groupNames.add("TestGroup3");
-  	return GetGroupsResponseProto.newBuilder().addAllGroupname(groupNames).build(); 
+  	return GetAllGroupsResponseProto.newBuilder().addAllGroupname(groupNames).build(); 
   }
 
 
@@ -632,7 +643,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   public DeleteUserResponseProto deleteUser(RpcController controller,
       DeleteUserRequestProto req) throws ServiceException {
     try {
-      server.deleteUser(req.getUser());
+			UserProto userProto = req.getUser();
+			User user = new User(userProto.getName(), userProto.getIp());
+      server.deleteUser(user);
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -643,7 +656,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   public AddUsertoGroupResponseProto addUsertoGroup(RpcController controller,
       AddUsertoGroupRequestProto req) throws ServiceException {
     try {
-      server.addUsertoGroup(req.getUser(), req.getGroupname());
+			UserProto userProto = req.getUser();
+			User user = new User(userProto.getName(), userProto.getIp());
+      server.addUsertoGroup(user, req.getGroupname());
     } catch (IOException e) {
       throw new ServiceException(e);
     }

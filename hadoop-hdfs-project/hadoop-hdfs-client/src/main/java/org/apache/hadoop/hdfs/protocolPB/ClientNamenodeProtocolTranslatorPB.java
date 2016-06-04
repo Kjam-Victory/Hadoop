@@ -17,13 +17,14 @@
  */
 package org.apache.hadoop.hdfs.protocolPB;
 
-import org.apache.hadoop.*;
+import org.apache.hadoop.database.*;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
@@ -158,15 +159,17 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetBal
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwnerRequestProto;
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateGroupRequestProto;
-import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CreateUserRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.DeleteUserRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.AddUsertoGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.RemoveUserFromGroupRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetGroupsResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllUsersResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.GetAllGroupsResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.UserProto;
 
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
@@ -414,8 +417,9 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public void createUser(User user)
       throws IOException {
+		UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
     CreateUserRequestProto.Builder req = CreateUserRequestProto.newBuilder()
-        .setUser(user);
+        .setUser(userProto);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.createUser(null, req.build());
@@ -431,8 +435,9 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public void deleteUser(User user)
       throws IOException {
+		UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
     DeleteUserRequestProto.Builder req = DeleteUserRequestProto.newBuilder()
-        .setUser(user);
+        .setUser(userProto);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.deleteUser(null, req.build());
@@ -448,8 +453,9 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public void addUsertoGroup(User user, String groupname)
       throws IOException {
+		UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
     AddUsertoGroupRequestProto.Builder req = AddUsertoGroupRequestProto.newBuilder()
-        .setUser(user).setGroupname(groupname);
+        .setUser(userProto).setGroupname(groupname);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.addUsertoGroup(null, req.build());
@@ -466,7 +472,8 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public void removeUserFromGroup(User user, String groupname)
       throws IOException {
-    RemoveUserFromGroupRequestProto.Builder req = RemoveUserFromGroupRequestProto.newBuilder().setGroupname(groupname).setUser(user);
+		UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
+    RemoveUserFromGroupRequestProto.Builder req = RemoveUserFromGroupRequestProto.newBuilder().setGroupname(groupname).setUser(userProto);
 
     try {
       if (Client.isAsynchronousMode()) {
@@ -483,7 +490,8 @@ public class ClientNamenodeProtocolTranslatorPB implements
   @Override
   public List<String> getGroups(User user)
       throws IOException {
-    GetGroupsRequestProto.Builder req = GetGroupsRequestProto.newBuilder().setUser(user);
+		UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
+    GetGroupsRequestProto.Builder req = GetGroupsRequestProto.newBuilder().setUser(userProto);
 
     try {
       if (Client.isAsynchronousMode()) {
@@ -495,14 +503,14 @@ public class ClientNamenodeProtocolTranslatorPB implements
               @Override
               public List<String> get(long timeout, TimeUnit unit)
                   throws Exception {
-                return (GetGroupsResponseProto) asyncReturnMessage
-                        .get(timeout, unit).getGroupnameList();
+                return ((GetGroupsResponseProto) asyncReturnMessage
+                        .get(timeout, unit)).getGroupnameList();
               }
             };
         ASYNC_RETURN_VALUE.set(asyncGet);
         return null;
       } else {
-        rpcProxy.getGroups(null, req.build()).getGroupnameList();
+        return rpcProxy.getGroups(null, req.build()).getGroupnameList();
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
@@ -518,14 +526,14 @@ public class ClientNamenodeProtocolTranslatorPB implements
         rpcProxy.getAllUsers(null, req.build());           
         final AsyncGet<Message, Exception> asyncReturnMessage
             = ProtobufRpcEngine.getAsyncReturnMessage();
-        final AsyncGet<List<String>, Exception> asyncGet =
-            new AsyncGet<List<String>, Exception>() {
+        final AsyncGet<List<User>, Exception> asyncGet =
+            new AsyncGet<List<User>, Exception>() {
               @Override
               public List<User> get(long timeout, TimeUnit unit)
                   throws Exception {
-                List<UserProto> list = (GetAllUsersResponseProto) asyncReturnMessage
-                        .get(timeout, unit).getUserList();
-                List<User> ret = new List<User>();
+                List<UserProto> list = ((GetAllUsersResponseProto) asyncReturnMessage
+                        .get(timeout, unit)).getUserList();
+                List<User> ret = new ArrayList<User>();
         		for(UserProto p : list) {
         			ret.add(new User(p.getName(), p.getIp()));
         		}
@@ -536,7 +544,7 @@ public class ClientNamenodeProtocolTranslatorPB implements
         return null;
       } else {
         List<UserProto> list = rpcProxy.getAllUsers(null, req.build()).getUserList();
-        List<User> ret = new List<User>();
+     		List<User> ret = new ArrayList<User>();
         for(UserProto p : list) {
         	ret.add(new User(p.getName(), p.getIp()));
         }
@@ -563,14 +571,14 @@ public class ClientNamenodeProtocolTranslatorPB implements
               @Override
               public List<String> get(long timeout, TimeUnit unit)
                   throws Exception {
-                return (GetAllGroupsResponseProto) asyncReturnMessage
-                        .get(timeout, unit).getGroupnameList();
+                return ((GetAllGroupsResponseProto) asyncReturnMessage
+                        .get(timeout, unit)).getGroupnameList();
               }
             };
         ASYNC_RETURN_VALUE.set(asyncGet);
         return null;
       } else {
-        rpcProxy.getAllGroups(null, req.build()).getGroupnameList();
+      	return	rpcProxy.getAllGroups(null, req.build()).getGroupnameList();
       }
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);

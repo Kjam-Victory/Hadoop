@@ -5,8 +5,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.apache.hadoop.DbManager;
-import org.apache.hadoop.User;
+import java.sql.Timestamp;
+
+import org.apache.hadoop.database.*;
+
 
 public class DBHelper {
 	private Connection con;
@@ -19,7 +21,10 @@ public class DBHelper {
     	    Statement stmt = con.createStatement();
     	    String sqlString = "SELECT * FROM Groups WHERE Name = \'" + group + "\'";
     	    ResultSet rs = stmt.executeQuery(sqlString);
-    	    if (rs.next()) return false;
+    	    if (rs.next()) {
+    	    	con.close();
+    	    	return false;
+    	    }
     	    sqlString = "INSERT INTO Groups (Name) VALUES(\'"+ group + "\')";
     	    stmt.executeUpdate(sqlString);
     	    con.close();
@@ -42,14 +47,17 @@ public class DBHelper {
     	    return false;
     	}
 	}
-	public boolean createUser(User user) {
+	public boolean createUser(User user, Timestamp time) {
 		try {
     	    con = DbManager.getConnection(false);
     	    Statement stmt = con.createStatement();
     	    String sqlString = "SELECT * FROM Users WHERE Name = \'" + user.getName() + "\' AND IP = " + user.getIP();
     	    ResultSet rs = stmt.executeQuery(sqlString);
-    	    if (rs.next()) return false;
-    	    sqlString = "INSERT INTO Users (Name, IP) VALUES(\'"+ user.getName() + "\', " + user.getIP() + ")";
+    	    if (rs.next()) {
+    	    	con.close();
+    	    	return false;
+    	    }
+    	    sqlString = "INSERT INTO Users (Name, IP, CreateTime) VALUES(\'"+ user.getName() + "\', " + user.getIP() + ", \'" + time + "\')";
     	    stmt.executeUpdate(sqlString);
     	    con.close();
     	    return true;
@@ -146,10 +154,24 @@ public class DBHelper {
     	}
 		return res;
 	}
-	public static void main(String[] args) {
-		DBHelper db = new DBHelper();
-		if (db.createGroup("test")) {
-			List<String> groups = db.getAllGroups();
+	public Timestamp getLastUserTime() {
+		Timestamp res = null;
+		try {
+			con = DbManager.getConnection(true);
+			Statement stmt = con.createStatement();
+    	    String sqlString = "SELECT MAX(CreateTime) FROM Users";
+    	    ResultSet rs = stmt.executeQuery(sqlString);
+    	    if (rs.next()) {
+    	    	res = rs.getTimestamp(1);
+    	    }
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return res;
+	}
+	public void test() {
+		if (createGroup("test")) {
+			List<String> groups = getAllGroups();
 			System.out.println("Add a new group. Groups in DB:");
 			for (String g : groups)
 				System.out.println(g);
@@ -157,46 +179,49 @@ public class DBHelper {
 			System.out.println("Adding group failed.");
 		
 		User u1 = new User("u1", 10);
-		if (db.createUser(u1)) {
-			List<User> users = db.getAllUsers();
+		Timestamp time = new Timestamp(116,6,2,0,0,0,0);
+		if (createUser(u1, time)) {
+			List<User> users = getAllUsers();
 			System.out.println("Add a new user. Users in DB:");
 			for (User u : users)
 				System.out.println(u.getName() + ", " + u.getIP());
 		} else
 			System.out.println("Adding user failed.");
 		
-		if (db.addUsertoGroup(u1, "test")) {
+		if (addUsertoGroup(u1, "test")) {
 			System.out.println("Add a user to group test. User's groups:");
-			List<String> groups = db.getGroups(u1);
+			List<String> groups = getGroups(u1);
 			for (String g : groups)
 				System.out.println(g);
 		} else
 			System.out.println("Adding user to group failed.");
 		
-		if (db.removeUserFromGroup(u1, "test")) {
+		if (removeUserFromGroup(u1, "test")) {
 			System.out.println("Remove a user from group test. User's groups:");
-			List<String> groups = db.getGroups(u1);
+			List<String> groups = getGroups(u1);
 			for (String g : groups)
 				System.out.println(g);
 		} else
 			System.out.println("Removing user from group failed.");
 		
-		if (db.deleteUser(u1)) {
-			List<User> users = db.getAllUsers();
+		if (deleteUser(u1)) {
+			List<User> users = getAllUsers();
 			System.out.println("Delete a user. Users in DB:");
 			for (User u : users)
 				System.out.println(u.getName() + ", " + u.getIP());
 		} else
 			System.out.println("Deleting user failed.");
 		
-		if (db.deleteGroup("test")) {
-			List<String> groups = db.getAllGroups();
+		if (deleteGroup("test")) {
+			List<String> groups = getAllGroups();
 			System.out.println("Delete a group. Groups in DB:");
 			for (String g : groups)
 				System.out.println(g);
 		} else
 			System.out.println("Deleteing group failed.");
-		
-		
+	}
+	public static void main(String[] args) {
+		DBHelper db = new DBHelper();
+		db.test();
 	}
 }

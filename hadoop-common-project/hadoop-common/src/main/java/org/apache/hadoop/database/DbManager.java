@@ -6,7 +6,7 @@ public class DbManager {
         static private String databaseURL = "jdbc:mysql://localhost:3306/";
         static private String dbname = "Hadoop";
         static private String username = "root";
-        static private String password = "1728";
+        static private String password = "root";
 	
 	/**
 	 * Opens a database connection

@@ -17,7 +17,7 @@
  */
 package org.apache.hadoop.hdfs;
 
-import org.apache.hadoop.*;
+import org.apache.hadoop.database.*;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_SECURITY_CRYPTO_CODEC_CLASSES_KEY_PREFIX;
 import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_READS;
@@ -1931,7 +1931,6 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
           UnresolvedPathException.class,
           SnapshotAccessControlException.class);
     }
-    return null;
   }
 
   /**
@@ -1952,7 +1951,6 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
           UnresolvedPathException.class,
           SnapshotAccessControlException.class);
     }
-    return null;
   }
 
   /**
@@ -1973,7 +1971,6 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
           UnresolvedPathException.class,
           SnapshotAccessControlException.class);
     }
-    return null;
   }
 
   /**
