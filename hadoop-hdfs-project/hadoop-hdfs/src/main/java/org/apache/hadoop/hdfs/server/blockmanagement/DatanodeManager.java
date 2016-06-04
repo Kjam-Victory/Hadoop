@@ -677,6 +677,11 @@ public class DatanodeManager {
           "BLOCK* removeDeadDatanode: lost heartbeat from " + d);
       removeDatanode(d);
     }
+
+    FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteNode.txt"));
+    w.write("delete node\n");
+    w.close();
+    System.out.println("Success");
   }
 
   /** Is the datanode dead? */
