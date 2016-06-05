@@ -21,9 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.zip.GZIPInputStream;
-
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.FileReader;
@@ -56,6 +60,7 @@ import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.util.MinimalPrettyPrinter;
+import cs219.proj.PrivateFileOp;
 
 /**
  * Display contents or checksums of files 
@@ -97,13 +102,24 @@ class Display extends FsCommand {
       }
       
       item.fs.setVerifyChecksum(verifyChecksum);
-      printToStdout(getInputStream(item));
+      printToStdout(getInputStream(item), item);
     }
 
-    private void printToStdout(InputStream in) throws IOException {
+    private void printToStdout(InputStream in, PathData item) throws IOException {
       try {
-        IOUtils.copyBytes(in, out, getConf(), false);
-      } finally {
+        short perm = item.stat.getPermission().toShort();
+        if(perm%64 == 0 && perm >= 64 && perm <= 448) {
+          byte[] decrypted = PrivateFileOp.dec(in, item);
+          out.write(decrypted);
+        }
+        else {
+          IOUtils.copyBytes(in, out, getConf(), false);
+        }
+      } catch (IOException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
+        throw new IOException(
+            "displaying content of '" + item + "': " + e.getMessage());
+      }
+      finally {
         in.close();
       }
     }

@@ -18,10 +18,14 @@
 package org.apache.hadoop.fs;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
@@ -32,6 +36,7 @@ import org.apache.hadoop.fs.shell.CommandFormat;
 import org.apache.hadoop.fs.shell.FsCommand;
 import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.util.Shell;
+import cs219.proj.PrivateFileOp;
 
 /**
  * This class is the home for file permissions related commands.
@@ -98,16 +103,33 @@ public class FsShellPermissions extends FsCommand {
     @Override
     protected void processPath(PathData item) throws IOException {
       short newperms = pp.applyNewPermission(item.stat);
+      short currentperms = item.stat.getPermission().toShort();
       if (item.stat.getPermission().toShort() != newperms) {
         try {
           item.fs.setPermission(item.path, new FsPermission(newperms));
-        } catch (IOException e) {
+          
+          
+          //Call the init function
+          if (checkPrivate(newperms) && !checkPrivate(currentperms)) {
+            PrivateFileOp.init(item);
+          }
+          
+          //Call the restore function
+          if (checkPrivate(currentperms) && !checkPrivate(newperms)) {
+            PrivateFileOp.restore(item, true);
+          }
+          
+        } catch (IOException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
           LOG.debug("Error changing permissions of " + item, e);
           throw new IOException(
               "changing permissions of '" + item + "': " + e.getMessage());
         }
       }
-    }    
+    }
+    
+    private boolean checkPrivate(short perm) {
+      return perm%64 == 0 && perm >= 64 && perm <= 448;
+    }
   }
   
   // used by chown/chgrp

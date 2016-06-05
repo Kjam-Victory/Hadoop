@@ -23,10 +23,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -34,6 +38,7 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathIsDirectoryException;
 import org.apache.hadoop.io.IOUtils;
+import cs219.proj.PrivateFileOp;
 
 /** Various commands for copy files */
 @InterfaceAudience.Private
@@ -360,6 +365,13 @@ class CopyCommands {
       FSDataOutputStream fos = dst.fs.append(dst.path);
 
       try {
+        
+        short perm = dst.stat.getPermission().toShort();
+        if(perm%64 == 0 && perm >= 64 && perm <= 448) {
+          //Restore the file first
+          PrivateFileOp.restore(dst, false);
+        }
+        
         if (readStdin) {
           if (args.size() == 0) {
             IOUtils.copyBytes(System.in, fos, DEFAULT_IO_LENGTH);
@@ -376,6 +388,15 @@ class CopyCommands {
           IOUtils.closeStream(is);
           is = null;
         }
+        
+        if(perm%64 == 0 && perm >= 64 && perm <= 448) {
+          //Encrypt the file and end
+          PrivateFileOp.init(dst);
+        }
+
+      } catch (IOException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) { 
+        throw new IOException(
+            "appending content of '" + dst + "': " + e.getMessage());
       } finally {
         if (is != null) {
           IOUtils.closeStream(is);
