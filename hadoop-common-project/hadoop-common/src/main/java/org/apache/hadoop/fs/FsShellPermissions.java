@@ -36,7 +36,6 @@ import org.apache.hadoop.fs.shell.CommandFormat;
 import org.apache.hadoop.fs.shell.FsCommand;
 import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.util.Shell;
-import cs219.proj.PrivateFileOp;
 
 /**
  * This class is the home for file permissions related commands.

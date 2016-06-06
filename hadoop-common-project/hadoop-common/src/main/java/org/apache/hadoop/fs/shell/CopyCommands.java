@@ -37,8 +37,8 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathIsDirectoryException;
+import org.apache.hadoop.fs.PrivateFileOp;
 import org.apache.hadoop.io.IOUtils;
-import cs219.proj.PrivateFileOp;
 
 /** Various commands for copy files */
 @InterfaceAudience.Private
@@ -362,7 +362,7 @@ class CopyCommands {
       }
 
       InputStream is = null;
-      FSDataOutputStream fos = dst.fs.append(dst.path);
+      FSDataOutputStream fos = null;
 
       try {
         
@@ -371,6 +371,8 @@ class CopyCommands {
           //Restore the file first
           PrivateFileOp.restore(dst, false);
         }
+        
+        fos = dst.fs.append(dst.path);
         
         if (readStdin) {
           if (args.size() == 0) {
@@ -389,6 +391,8 @@ class CopyCommands {
           is = null;
         }
         
+        IOUtils.closeStream(fos);
+        
         if(perm%64 == 0 && perm >= 64 && perm <= 448) {
           //Encrypt the file and end
           PrivateFileOp.init(dst);
@@ -402,9 +406,7 @@ class CopyCommands {
           IOUtils.closeStream(is);
         }
 
-        if (fos != null) {
-          IOUtils.closeStream(fos);
-        }
+        IOUtils.closeStream(fos);
       }
     }
   }
