@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+import org.apache.hadoop.database.*;
+
+import java.util.List;
+import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -70,13 +74,12 @@ class FSPermissionChecker implements AccessControlEnforcer {
 
   private final String fsOwner;
   private final String supergroup;
-  private final UserGroupInformation callerUgi;
+  private UserGroupInformation callerUgi;
 
   private final String user;
-  private final Set<String> groups;
+  private Set<String> groups;
   private final boolean isSuper;
   private final INodeAttributeProvider attributeProvider;
-
 
   FSPermissionChecker(String fsOwner, String supergroup,
       UserGroupInformation callerUgi,
@@ -86,6 +89,7 @@ class FSPermissionChecker implements AccessControlEnforcer {
     this.callerUgi = callerUgi;
     HashSet<String> s =
         new HashSet<String>(Arrays.asList(callerUgi.getGroupNames()));
+    
     groups = Collections.unmodifiableSet(s);
     user = callerUgi.getShortUserName();
     isSuper = user.equals(fsOwner) || groups.contains(supergroup);
@@ -101,6 +105,15 @@ class FSPermissionChecker implements AccessControlEnforcer {
   }
 
   public Set<String> getGroups() {
+	String callerFullName = this.callerUgi.getShortUserName();
+	String callerRealName = callerFullName.split("/")[0];
+	String callerIp = callerFullName.split("/")[1];
+	  
+	DBHelper dbHelper = new DBHelper();	
+	HashSet<String> s =
+	        new HashSet<String>(dbHelper.getGroups(new User(callerRealName, callerIp)));
+	groups = Collections.unmodifiableSet(s);
+	
     return groups;
   }
 
@@ -320,6 +333,7 @@ class FSPermissionChecker implements AccessControlEnforcer {
     if (inode == null) {
       return;
     }
+    
     final FsPermission mode = inode.getFsPermission();
     final AclFeature aclFeature = inode.getAclFeature();
     if (aclFeature != null) {
@@ -330,12 +344,55 @@ class FSPermissionChecker implements AccessControlEnforcer {
         return;
       }
     }
+    
+    String fileOwner = inode.getUserName();
+    String fileOwnerIpAddr = fileOwner.split("/")[1];
+    DBHelper dbHelper = new DBHelper();
+    String realfsOwnerName = fileOwner.split("/")[0];
+    User fileOwnerUser = new User(realfsOwnerName, fileOwnerIpAddr);
+    Set<String> fileOwnerGroups = new HashSet<String>(dbHelper.getGroups(fileOwnerUser));
+    for(String fileownergroup: fileOwnerGroups){
+    	System.out.println(fileownergroup);
+    }
+    
+    Set<String> callerTempGroups = new HashSet();
+    callerTempGroups.addAll(getGroups());
+    callerTempGroups.retainAll(fileOwnerGroups);
+    
+    String win = "/Users/Kai_Jiang/Desktop/Permission.log";
+	FileWriter writer;
+	try {
+		writer = new FileWriter(win,true);
+		writer.write(fileOwner+"\n");
+		writer.write(fileOwnerIpAddr+"\n");
+		writer.write(realfsOwnerName+"\n\n");
+		
+		for(String fileownergroup: fileOwnerGroups){
+			writer.write(fileownergroup+"\n");	    	
+	    }
+		writer.write("\n");
+		for(String s:getGroups()){
+			writer.write(s+"\n");
+		}
+		writer.write("\n");
+		writer.close();
+	}
+	catch(Exception e){
+		e.printStackTrace();
+	}
+	
+	
+   
+    
     if (getUser().equals(inode.getUserName())) { //user class
       if (mode.getUserAction().implies(access)) { return; }
     }
-    else if (getGroups().contains(inode.getGroupName())) { //group class
+    /*else if (getGroups().contains(inode.getGroupName())) { //old group class
       if (mode.getGroupAction().implies(access)) { return; }
-    }
+    }*/
+    else if (!callerTempGroups.isEmpty()) { //new group class
+        if (mode.getGroupAction().implies(access)) { return; }
+    }    
     else { //other class
       if (mode.getOtherAction().implies(access)) { return; }
     }

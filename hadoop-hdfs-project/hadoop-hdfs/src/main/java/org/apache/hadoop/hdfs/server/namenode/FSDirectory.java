@@ -100,7 +100,7 @@ public class FSDirectory implements Closeable {
     final INodeDirectory r = new INodeDirectory(
         INodeId.ROOT_INODE_ID,
         INodeDirectory.ROOT_NAME,
-        namesystem.createFsOwnerPermissions(new FsPermission((short) 0755)),
+        namesystem.createFsOwnerPermissions(new FsPermission((short) 0775)),
         0L);
     r.addDirectoryWithQuotaFeature(
         new DirectoryWithQuotaFeature.Builder().

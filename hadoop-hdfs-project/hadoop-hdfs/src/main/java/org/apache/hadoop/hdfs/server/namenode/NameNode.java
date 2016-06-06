@@ -666,7 +666,8 @@ public class NameNode extends ReconfigurableBase implements
    * UGI.getCurrentUser which is synch'ed
    */
   public static UserGroupInformation getRemoteUser() throws IOException {
-    UserGroupInformation ugi = Server.getRemoteUser();
+    UserGroupInformation ugi = Server.getRemoteUser();    
+    
     return (ugi != null) ? ugi : UserGroupInformation.getCurrentUser();
   }
 

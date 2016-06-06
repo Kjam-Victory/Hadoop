@@ -35,6 +35,7 @@ public class UserManager {
 	                if (ip == -1) continue;
 	                User user = new User(info[0], ip);
 	                db.createUser(user, timestamp);
+                    addUserRootDir(info[0], info[1]);
                 }
             }   
             bufferedReader.close(); 
@@ -64,8 +65,29 @@ public class UserManager {
         System.out.println(res);
 		return res;
 	}
-	public static void main(String[] args) {
-		UserManager u = new UserManager();
-		u.detectNewUser("event.log");
-	}
+
+    private static void addUserRootDir(String userName, String IpAddr){
+        String realUserName = userName+"/"+IpAddr;
+        try {
+            UserGroupInformation ugi = UserGroupInformation.getCurrentUser();
+            UserGroupInformation caller = UserGroupInformation.createRemoteUser(userName);
+            
+            ugi.doAs(new PrivilegedExceptionAction<Void>() {            
+                public Void run() throws Exception {
+                    Configuration conf = new Configuration();
+                    conf.set("fs.defaultFS", "hdfs://master:9000/");
+                    //conf.set("hadoop.job.ugi", "hadoop");
+                    
+                    FileSystem fs = FileSystem.get(conf);   
+                    fs.mkdirs(new Path("/user/"+userName));
+                    fs.setOwner(new Path("/user/"+userName), realUserName, caller.getPrimaryGroupName());  
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
 }

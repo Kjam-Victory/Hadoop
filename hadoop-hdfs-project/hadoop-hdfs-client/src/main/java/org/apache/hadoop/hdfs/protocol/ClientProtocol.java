@@ -343,7 +343,7 @@ public interface ClientProtocol {
    * @throws IOException If an I/O error occurred
    */
   @Idempotent
-  void createGroup(String groupname)
+  void createGroup(String groupname, User user)
       throws IOException;
 
 

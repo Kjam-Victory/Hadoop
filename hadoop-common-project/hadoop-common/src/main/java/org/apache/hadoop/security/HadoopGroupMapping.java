@@ -78,9 +78,14 @@ public class HadoopGroupMapping
 	  try {
 		  DBHelper DBhelper = new DBHelper();
           InetAddress ipAddr = InetAddress.getLocalHost();
-          org.apache.hadoop.database.User user = new org.apache.hadoop.database.User(userName, (long)1);
+          
+          String userIpAddr = userName.split("/")[1];
+          DBHelper dbHelper = new DBHelper();
+          String realUserName = userName.split("/")[0];
+          org.apache.hadoop.database.User user = new org.apache.hadoop.database.User(realUserName, userIpAddr);
           user.setIP(ipAddr.getHostAddress());          
           groups = DBhelper.getGroups(user);
+          
           System.out.println(ipAddr.getHostAddress());
       } catch (UnknownHostException ex) {
           ex.printStackTrace();

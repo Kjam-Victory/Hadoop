@@ -545,7 +545,9 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   public CreateGroupResponseProto createGroup(RpcController controller,
       CreateGroupRequestProto req) throws ServiceException {
     try {
-      server.createGroup(req.getGroupname());
+      UserProto userProto = req.getUser();
+      User user = new User(userProto.getName(), userProto.getIp());
+      server.createGroup(req.getGroupname(), user);
     } catch (IOException e) {
       throw new ServiceException(e);
     }

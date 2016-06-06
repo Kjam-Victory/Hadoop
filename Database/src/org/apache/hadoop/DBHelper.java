@@ -84,7 +84,7 @@ public class DBHelper {
 		try {
     	    con = DbManager.getConnection(false);
     	    Statement stmt = con.createStatement();
-    	    String sqlString = "INSERT INTO UserGroup (Username, UserIP, GroupName) VALUES(\'"+ user.getName() + "\', " + user.getIP() + ", \'" + group + "\')";
+    	    String sqlString = "INSERT INTO UserGroup (Username, UserIP, GroupName, IsOwner) VALUES(\'"+ user.getName() + "\', " + user.getIP() + ", \'" + group + "\', 0)";
     	    stmt.executeUpdate(sqlString);
     	    con.close();
     	    return true;
@@ -93,6 +93,37 @@ public class DBHelper {
     	    return false;
     	}
 	}
+    public boolean isGroupOwner(User user, String group) {
+        boolean res = false;
+        try {
+            con = DbManager.getConnection(true);
+            Statement stmt = con.createStatement();
+            String sqlString = "SELECT * FROM UserGroup where Groupname = \'"+ group+"\' AND Username = \'" + user.getName() + "\' AND UserIP = " + user.getIP() + " AND IsOwner = 1";
+            ResultSet rs = stmt.executeQuery(sqlString);
+            while (rs.next()) {
+                res = true;
+                break;
+            }
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return res;
+    }
+
+    public boolean addGroupOwnertoGroup(User user, String group) {
+        try {
+            con = DbManager.getConnection(false);
+            Statement stmt = con.createStatement();
+            String sqlString = "INSERT INTO UserGroup (Username, UserIP, GroupName, IsOwner) VALUES(\'"+ user.getName() + "\', " + user.getIP() + ", \'" + group + "\', 1)";
+            stmt.executeUpdate(sqlString);
+            con.close();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
 	public boolean removeUserFromGroup(User user, String group) {
 		try {
     	    con = DbManager.getConnection(false);

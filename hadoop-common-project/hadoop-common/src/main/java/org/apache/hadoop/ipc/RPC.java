@@ -963,14 +963,7 @@ public class RPC {
     }
     
     private void initProtocolMetaInfo(Configuration conf) {
-      try{
-				FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/log.txt"));
-        w.write("Here222");
-				w.close();	
-			}
-			catch(Exception e){
-				System.out.println("Hahaha");
-			}
+     
 			RPC.setProtocolEngine(conf, ProtocolMetaInfoPB.class,
           ProtobufRpcEngine.class);
       ProtocolMetaInfoServerSideTranslatorPB xlator = 

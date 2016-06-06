@@ -715,6 +715,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
           DFS_NAMENODE_RESOURCE_CHECK_INTERVAL_DEFAULT);
 
       this.fsOwner = UserGroupInformation.getCurrentUser();
+      System.out.println(this.fsOwner.getUserName());
       this.supergroup = conf.get(DFS_PERMISSIONS_SUPERUSERGROUP_KEY, 
                                  DFS_PERMISSIONS_SUPERUSERGROUP_DEFAULT);
       this.isPermissionEnabled = conf.getBoolean(DFS_PERMISSIONS_ENABLED_KEY,
@@ -1684,7 +1685,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
    * Add Group to hdfs.
    * @throws IOException
    */
-  void createGroup(String group)
+  void createGroup(String group, User user)
       throws IOException {
     //HdfsFileStatus auditStat;
     //checkOperation(OperationCategory.WRITE);
@@ -1694,7 +1695,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 		DBHelper DBhelper = new DBHelper();
 
 		DBhelper.createGroup(group);
-    	
+		DBhelper.addGroupOwnertoGroup(user, group);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/a.txt"));
 //      w.write(group+"\n");
 //      w.close();
@@ -1722,9 +1723,22 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
+    	UserGroupInformation callerUgi = getRemoteUser();
+    	String callerName = callerUgi.getShortUserName();
+    	String realCallerName = callerName.split("/")[0];
+    	String callerIp = callerName.split("/")[1];
+    	User caller = new User(realCallerName, callerIp);
+    	
+    	//check group owner authority
 		DBHelper DBhelper = new DBHelper();
-
-		DBhelper.deleteGroup(group);
+		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
+			DBhelper.deleteGroup(group);
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteGroup.txt"));
+	      w.write(group+"\n");
+	      w.close();
+		}
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteGroup.txt"));
 //      w.write(group+"\n");
@@ -1753,9 +1767,19 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {  
+    	UserGroupInformation caller = getRemoteUser();
+    	String callerName = caller.getShortUserName();
+    	
+    	//check super user authority
 		DBHelper DBhelper = new DBHelper();
-
-		DBhelper.createUser(user, new Timestamp(new java.util.Date().getTime()));
+		if(this.fsOwner.getShortUserName().equals(callerName)){			
+			DBhelper.createUser(user, new Timestamp(new java.util.Date().getTime()));
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/createUser.txt"));
+	      w.write("hahaha \n");
+	      w.close();
+		}
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/createUser.txt"));
 //      w.write("hahaha \n");
@@ -1784,9 +1808,21 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
+    	UserGroupInformation callerUgi = getRemoteUser();
+    	String callerName = callerUgi.getShortUserName();
+    	
+    	//check super user authority
 		DBHelper DBhelper = new DBHelper();
+		if(this.fsOwner.getShortUserName().equals(callerName)){	
 
-		DBhelper.deleteUser(user);
+			DBhelper.deleteUser(user);
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteUser.txt"));
+	      w.write("hahaha \n");
+	      w.close();
+		}
+		
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteUser.txt"));
 //      w.write("hahaha \n");
@@ -1815,9 +1851,24 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
+    	UserGroupInformation callerUgi = getRemoteUser();
+    	String callerName = callerUgi.getShortUserName();
+    	String realCallerName = callerName.split("/")[0];
+    	String callerIp = callerName.split("/")[1];
+    	User caller = new User(realCallerName, callerIp);
+    	
+    	//check group owner authority
 		DBHelper DBhelper = new DBHelper();
+		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
 
-		DBhelper.addUsertoGroup(user, group);
+			DBhelper.addUsertoGroup(user, group);
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
+	      w.write("hahaha \n");
+	      w.close();
+		}
+
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
 //      w.write("hahaha \n");
@@ -1846,9 +1897,24 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
+    	UserGroupInformation callerUgi = getRemoteUser();
+    	String callerName = callerUgi.getShortUserName();
+    	String realCallerName = callerName.split("/")[0];
+    	String callerIp = callerName.split("/")[1];
+    	User caller = new User(realCallerName, callerIp);
+    	
+    	//check group owner authority
 		DBHelper DBhelper = new DBHelper();
+		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
 
-		DBhelper.removeUserFromGroup(user, group);
+			DBhelper.removeUserFromGroup(user, group);
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/removeUserFromGroup.txt"));
+	      w.write(group+"\n");
+	      w.close();
+		}
+		
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/removeUserFromGroup.txt"));
 //      w.write(group+"\n");
@@ -1877,9 +1943,19 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
+    	UserGroupInformation caller = getRemoteUser();
+    	String callerName = caller.getShortUserName();
+    	
+    	//check super user authority
 		DBHelper DBhelper = new DBHelper();
-
-		return DBhelper.getGroups(user);
+		if(this.fsOwner.getShortUserName().equals(callerName)){				
+			return DBhelper.getGroups(user);
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));      
+	      w.close();
+	      return new ArrayList<String>();
+		}
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));      
 //      w.close();
@@ -1912,9 +1988,20 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     //checkOperation(OperationCategory.WRITE);
     //writeLock();
     try {
+    	UserGroupInformation caller = getRemoteUser();
+    	String callerName = caller.getShortUserName();
+    	
+    	//check super user authority
 		DBHelper DBhelper = new DBHelper();
+		if(this.fsOwner.getShortUserName().equals(callerName)){	
 
-		return DBhelper.getAllUsers();
+			return DBhelper.getAllUsers();
+		}
+		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));      
+	      w.close();
+	      return new ArrayList<User>();
+		}
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));      
 //      w.close();

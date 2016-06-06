@@ -17,6 +17,11 @@
  */
 package org.apache.hadoop.hdfs.server.blockmanagement;
 
+import org.apache.hadoop.database.*;
+
+import java.io.File;
+import java.io.FileWriter;
+
 import static org.apache.hadoop.hdfs.server.protocol.DatanodeProtocol.DNA_ERASURE_CODING_RECONSTRUCTION;
 import static org.apache.hadoop.util.Time.monotonicNow;
 
@@ -667,6 +672,18 @@ public class DatanodeManager {
   /** Remove a dead datanode. */
   void removeDeadDatanode(final DatanodeID nodeID) {
     DatanodeDescriptor d;
+    try{
+    	DBHelper dbHelper = new DBHelper();    	
+    	dbHelper.deleteUserByIp(nodeID.getIpAddr());//delete all DBHelper IPs
+    	
+    	FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteNode.txt"));
+    	w.write(nodeID.getIpAddr()+"delete node\n");
+    	w.close();
+    	System.out.println("Success");
+    }
+    catch(Exception e){
+    	e.printStackTrace();
+    }    
     try {
       d = getDatanode(nodeID);
     } catch(IOException e) {
@@ -677,6 +694,7 @@ public class DatanodeManager {
           "BLOCK* removeDeadDatanode: lost heartbeat from " + d);
       removeDatanode(d);
     }
+    
   }
 
   /** Is the datanode dead? */
