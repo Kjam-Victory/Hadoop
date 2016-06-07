@@ -2375,8 +2375,8 @@ public abstract class FileSystem extends Configured implements Closeable {
    * Add group to hdfs.
    * @param group Group name
    */
-  public void createGroup(String group
-      ) throws IOException {
+  public void createGroup(String group, User user
+			) throws IOException {
   }
 
   /**

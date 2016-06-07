@@ -155,6 +155,7 @@ message SetOwnerResponseProto { // void response
 
 message CreateGroupRequestProto {
   required string groupname = 1;
+	required UserProto user = 2;
 }
 
 message CreateGroupResponseProto { // void response

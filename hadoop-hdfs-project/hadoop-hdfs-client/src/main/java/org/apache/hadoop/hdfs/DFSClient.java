@@ -1797,11 +1797,11 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
    *
    * @see ClientProtocol#setOwner(String, String, String)
    */
-  public void createGroup(String groupname)
+  public void createGroup(String groupname, User user)
       throws IOException {
     checkOpen();
     try (TraceScope ignored = newPathTraceScope("createGroup", null)) {
-      namenode.createGroup(groupname);
+      namenode.createGroup(groupname, user);
     } catch (RemoteException re) {
       throw re.unwrapRemoteException(AccessControlException.class,
           FileNotFoundException.class,

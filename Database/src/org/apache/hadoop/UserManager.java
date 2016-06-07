@@ -1,12 +1,23 @@
-package org.apache.hadoop;
+package org.apache.hadoop.database;
 
-import java.io.*;
-import java.util.Date;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import org.apache.hadoop.User;
-import org.apache.hadoop.DBHelper;
+import java.util.Date;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.database.DBHelper;
+import org.apache.hadoop.database.User;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.security.UserGroupInformation;
+
 
 public class UserManager {
 	private DBHelper db;
@@ -35,6 +46,8 @@ public class UserManager {
 	                if (ip == -1) continue;
 	                User user = new User(info[0], ip);
 	                db.createUser(user, timestamp);
+	                System.out.println(user.getName()+"/"+user.getIP());
+                    addUserRootDir(info[0], info[1]);
                 }
             }   
             bufferedReader.close(); 
@@ -64,8 +77,31 @@ public class UserManager {
         System.out.println(res);
 		return res;
 	}
-	public static void main(String[] args) {
-		UserManager u = new UserManager();
-		u.detectNewUser("event.log");
-	}
+
+    public static void addUserRootDir(final String userName, final String IpAddr){
+        final String realUserName = userName+"/"+IpAddr;
+        final String UserDirName = userName+"_"+IpAddr;
+        try {
+            final UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
+            final UserGroupInformation caller = UserGroupInformation.createRemoteUser(userName);
+            
+            ugi.doAs(new PrivilegedExceptionAction<Void>() {            
+                public Void run() throws Exception {
+                    Configuration conf = new Configuration();
+                    conf.set("fs.defaultFS", "hdfs://master:9000/");
+                    
+                    FileSystem fs = FileSystem.get(conf);   
+                    fs.mkdirs(new Path("/user/"+UserDirName));
+                    fs.setOwner(new Path("/user/"+UserDirName), realUserName, caller.getPrimaryGroupName());  
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+	
 }
+

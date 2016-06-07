@@ -834,10 +834,10 @@ public class NameNodeRpcServer implements NamenodeProtocols {
 
 
 	@Override // ClientProtocol
-  public void createGroup(String groupname)
+  public void createGroup(String groupname, User user)
       throws IOException {
     checkNNStartup();
-    namesystem.createGroup(groupname);
+    namesystem.createGroup(groupname, user);
   }
 
   @Override // ClientProtocol

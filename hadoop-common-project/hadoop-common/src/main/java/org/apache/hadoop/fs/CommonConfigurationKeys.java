@@ -46,7 +46,7 @@ public class CommonConfigurationKeys extends CommonConfigurationKeysPublic {
   public static final String  FS_PERMISSIONS_UMASK_KEY =
     "fs.permissions.umask-mode";
   /** Default value for FS_PERMISSIONS_UMASK_KEY */
-  public static final int     FS_PERMISSIONS_UMASK_DEFAULT = 0022;
+  public static final int     FS_PERMISSIONS_UMASK_DEFAULT = 0020;
   /** How often does RPC client send pings to RPC server */
   public static final String  IPC_PING_INTERVAL_KEY = "ipc.ping.interval";
   /** Default value for IPC_PING_INTERVAL_KEY */

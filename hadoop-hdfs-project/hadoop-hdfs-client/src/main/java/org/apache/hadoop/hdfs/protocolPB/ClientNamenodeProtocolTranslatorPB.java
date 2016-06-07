@@ -381,10 +381,13 @@ public class ClientNamenodeProtocolTranslatorPB implements
   }
 
   @Override
-  public void createGroup(String groupname)
+  public void createGroup(String groupname, User user)
       throws IOException {
+	UserProto userProto = UserProto.newBuilder().setName(user.getName()).setIp(user.getIP()).build();
+	
     CreateGroupRequestProto.Builder req = CreateGroupRequestProto.newBuilder()
-        .setGroupname(groupname);
+        .setGroupname(groupname)
+        .setUser(userProto);
     try {
       if (Client.isAsynchronousMode()) {
         rpcProxy.createGroup(null, req.build());

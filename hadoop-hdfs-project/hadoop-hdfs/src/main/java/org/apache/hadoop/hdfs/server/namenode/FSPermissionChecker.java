@@ -17,6 +17,9 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+import org.apache.hadoop.database.*;
+import java.util.List;
+import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -101,7 +104,14 @@ class FSPermissionChecker implements AccessControlEnforcer {
   }
 
   public Set<String> getGroups() {
-    return groups;
+    String callerFullName = this.callerUgi.getShortUserName();
+		String callerRealName = callerFullName.split("/")[0];
+		String callerIp = callerFullName.split("/")[1];
+		DBHelper dbHelper = new DBHelper();	
+		HashSet<String> s =
+				new HashSet<String>(dbHelper.getGroups(new User(callerRealName, callerIp)));
+		return Collections.unmodifiableSet(s);
+	//	return groups;
   }
 
   public boolean isSuperUser() {
@@ -330,13 +340,82 @@ class FSPermissionChecker implements AccessControlEnforcer {
         return;
       }
     }
-    if (getUser().equals(inode.getUserName())) { //user class
-      if (mode.getUserAction().implies(access)) { return; }
+
+		String fileOwner = inode.getUserName();
+    String fileOwnerIpAddr = fileOwner.split("/")[1];
+    DBHelper dbHelper = new DBHelper();
+    String realfsOwnerName = fileOwner.split("/")[0];
+    User fileOwnerUser = new User(realfsOwnerName, fileOwnerIpAddr);
+    Set<String> fileOwnerGroups = new HashSet<String>(dbHelper.getGroups(fileOwnerUser));
+    for(String fileownergroup: fileOwnerGroups){
+        System.out.println(fileownergroup);
     }
-    else if (getGroups().contains(inode.getGroupName())) { //group class
+   
+    Set<String> callerTempGroups = new HashSet();
+    callerTempGroups.addAll(getGroups());
+    callerTempGroups.retainAll(fileOwnerGroups);
+   
+    String win = "/Users/Kai_Jiang/Desktop/Permission.log";
+        FileWriter writer;
+        try {
+                writer = new FileWriter(win,true);
+                writer.write(fileOwner+"\n");
+                writer.write(fileOwnerIpAddr+"\n");
+                writer.write(realfsOwnerName+"\n\n");
+
+                for(String fileownergroup: fileOwnerGroups){
+                        writer.write(fileownergroup+"\n");
+            }
+                writer.write("\n");
+                for(String s:getGroups()){
+                        writer.write(s+"\n");
+                }
+                writer.write("\n");
+                writer.close();
+        }
+        catch(Exception e){
+                e.printStackTrace();
+        }
+
+
+
+
+    if (getUser().equals(inode.getUserName())) { //user class
+      try {
+                writer = new FileWriter(win,true);
+                writer.write("owner pass\n");
+                writer.close();
+        }
+        catch(Exception e){
+                e.printStackTrace();
+        }
+
+			if (mode.getUserAction().implies(access)) { return; }
+    }
+    /*else if (getGroups().contains(inode.getGroupName())) { //group class
       if (mode.getGroupAction().implies(access)) { return; }
+    }*/
+		else if (!callerTempGroups.isEmpty()) { //new group class
+        try {
+                writer = new FileWriter(win,true);
+                writer.write("group pass\n");
+                writer.close();
+        }
+        catch(Exception e){
+                e.printStackTrace();
+        }
+        if (mode.getGroupAction().implies(access)) { return; }
     }
     else { //other class
+			try {
+                writer = new FileWriter(win,true);
+                writer.write("other pass\n");
+                writer.close();
+        }
+        catch(Exception e){
+                e.printStackTrace();
+        }
+
       if (mode.getOtherAction().implies(access)) { return; }
     }
     throw new AccessControlException(

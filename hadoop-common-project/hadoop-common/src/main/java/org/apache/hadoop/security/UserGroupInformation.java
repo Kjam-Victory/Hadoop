@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.net.InetAddress;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.Principal;
@@ -448,7 +449,15 @@ public class UserGroupInformation {
     
     @Override
     public String getName() {
-      return realUser.getUserName();
+      String hostIpAddr = "";
+      try{
+    	  InetAddress ipAddr = InetAddress.getLocalHost();
+    	  hostIpAddr = ipAddr.getHostAddress();
+      }
+      catch(Exception e){
+    	  e.printStackTrace();
+      }
+      return realUser.getUserName()+"/"+hostIpAddr;
     }
     
     public UserGroupInformation getRealUser() {
@@ -1477,8 +1486,16 @@ public class UserGroupInformation {
    * @return the user's name up to the first '/' or '@'.
    */
   public String getShortUserName() {
+	String hostIpAddr = "";
+    try{
+      InetAddress ipAddr = InetAddress.getLocalHost();
+      hostIpAddr = ipAddr.getHostAddress();
+    }
+    catch(Exception e){
+      e.printStackTrace();
+    }
     for (User p: subject.getPrincipals(User.class)) {
-      return p.getShortName();
+      return p.getShortName()+"/"+hostIpAddr;
     }
     return null;
   }
@@ -1498,6 +1515,7 @@ public class UserGroupInformation {
   @InterfaceAudience.Public
   @InterfaceStability.Evolving
   public String getUserName() {
+ 
     return user.getName();
   }
 

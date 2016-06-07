@@ -1471,15 +1471,6 @@ public class Client implements AutoCloseable {
           throw new InterruptedIOException("Call interrupted");
         }
       }
-			System.out.println("Here");
-      try{
-				FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/log.txt"));
-				w.write("Call Here");
-				w.close();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-
 			if (call.error != null) {
         if (call.error instanceof RemoteException) {
           call.error.fillInStackTrace();

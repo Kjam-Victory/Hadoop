@@ -78,10 +78,12 @@ public class HadoopGroupMapping
 	  try {
 		  DBHelper DBhelper = new DBHelper();
           InetAddress ipAddr = InetAddress.getLocalHost();
-          org.apache.hadoop.database.User user = new org.apache.hadoop.database.User(userName, (long)1);
-          user.setIP(ipAddr.getHostAddress());          
-          groups = DBhelper.getGroups(user);
-          System.out.println(ipAddr.getHostAddress());
+          String userIpAddr = userName.split("/")[1];
+          DBHelper dbHelper = new DBHelper();
+          String realUserName = userName.split("/")[0];
+          org.apache.hadoop.database.User user = new org.apache.hadoop.database.User(realUserName, userIpAddr);
+					groups = DBhelper.getGroups(user);
+          System.out.println(userIpAddr);
       } catch (UnknownHostException ex) {
           ex.printStackTrace();
           System.out.println("Group Name Mapping Service Failed!");
