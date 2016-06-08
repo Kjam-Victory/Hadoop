@@ -1856,7 +1856,9 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     	String realCallerName = callerName.split("/")[0];
     	String callerIp = callerName.split("/")[1];
     	User caller = new User(realCallerName, callerIp);
-    	
+         FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
+	      w.write(callerName+"@"+callerIp+":"+this.fsOwner.getShortUserName()+"\n");
+	      w.write(user.getName()+":"+user.getIP()+":"+group+"\n");	
     	//check group owner authority
 		DBHelper DBhelper = new DBHelper();
 		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
@@ -1864,11 +1866,10 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 			DBhelper.addUsertoGroup(user, group);
 		}
 		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
 	      w.write("hahaha \n");
-	      w.close();
 		}
 
+	      w.close();
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
 //      w.write("hahaha \n");
