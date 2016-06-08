@@ -1858,20 +1858,17 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     	User caller = new User(realCallerName, callerIp);
     	
     	//check group owner authority
-		
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
-	      w.write(callerName+"@"+callerIp+":"+this.fsOwner.getShortUserName()+"\n");
-	      w.write(user.getName()+":"+user.getIP()+":"+group+"\n");
 		DBHelper DBhelper = new DBHelper();
 		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
 
 			DBhelper.addUsertoGroup(user, group);
 		}
 		else{
+	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
 	      w.write("hahaha \n");
+	      w.close();
 		}
 
-	      w.close();
       //checkOperation(OperationCategory.WRITE);
 //      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
 //      w.write("hahaha \n");

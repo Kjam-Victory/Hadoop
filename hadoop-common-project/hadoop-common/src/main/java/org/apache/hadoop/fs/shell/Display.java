@@ -21,13 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.zip.GZIPInputStream;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.FileReader;
@@ -47,7 +43,6 @@ import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathIsDirectoryException;
-import org.apache.hadoop.fs.PrivateFileOp;
 import org.apache.hadoop.io.DataInputBuffer;
 import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.io.IOUtils;
@@ -102,24 +97,13 @@ class Display extends FsCommand {
       }
       
       item.fs.setVerifyChecksum(verifyChecksum);
-      printToStdout(getInputStream(item), item);
+      printToStdout(getInputStream(item));
     }
 
-    private void printToStdout(InputStream in, PathData item) throws IOException {
+    private void printToStdout(InputStream in) throws IOException {
       try {
-        short perm = item.stat.getPermission().toShort();
-        if(perm%64 == 0 && perm >= 64 && perm <= 448) {
-          byte[] decrypted = PrivateFileOp.dec(in, item);
-          out.write(decrypted);
-        }
-        else {
-          IOUtils.copyBytes(in, out, getConf(), false);
-        }
-      } catch (IOException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
-        throw new IOException(
-            "displaying content of '" + item + "': " + e.getMessage());
-      }
-      finally {
+        IOUtils.copyBytes(in, out, getConf(), false);
+      } finally {
         in.close();
       }
     }

@@ -60,15 +60,18 @@ class GroupOps extends FsCommand {
   
   @Override
   protected void processOptions(LinkedList<String> args) {
-	CommandFormat cf = new CommandFormat(0, Integer.MAX_VALUE, "l");
+	CommandFormat cf = new CommandFormat(1, Integer.MAX_VALUE, "l");
     cf.addOptionWithValue("c");
     cf.addOptionWithValue("d");
     cf.parse(args);    
     createGroupName = cf.getOptValue("c");
     deleteGroupName = cf.getOptValue("d");
+    out.println(createGroupName);
+    out.println(deleteGroupName);
     createGroup = createGroupName!=null;
     deleteGroup = deleteGroupName!=null;
     listGroup = cf.getOpt("l");
+    out.println("listGroup:"+listGroup);
     if (args.isEmpty()) args.add(Path.CUR_DIR);
   }
 

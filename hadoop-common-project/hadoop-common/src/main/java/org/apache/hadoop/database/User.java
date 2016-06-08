@@ -9,6 +9,7 @@ public class User {
                 this.ip = ip;
         }
         public User(String name, String s) {
+                System.out.println(s);
                 long ip_num = (Long.parseLong(s.split("\\.")[0])<<24) + (Long.parseLong(s.split("\\.")[1])<<16)
                                 + (Long.parseLong(s.split("\\.")[2])<<8) +Long.parseLong(s.split("\\.")[3]); 
                 this.name = name;
