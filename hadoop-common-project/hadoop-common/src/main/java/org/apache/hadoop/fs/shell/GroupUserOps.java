@@ -45,7 +45,7 @@ class GroupUserOps extends FsCommand {
   }
   
   public static final String NAME = "grusr";
-  public static final String USAGE = "[[-a|-d] <group>] [[-u] <user:ipAddr>] ...";
+  public static final String USAGE = "[[-a|-d|-l] <group>] [[-u] <user@ipAddr>] ...";
   public static final String DESCRIPTION =
     "Add/Delete a user from group\n" +
     "-a: add a user into group\n" +
@@ -53,13 +53,14 @@ class GroupUserOps extends FsCommand {
 
   private boolean adduser;
   private boolean deleteuser;
+	private boolean listGroup;
   private String addGroupName;
   private String deleteGroupName;
   private String usernameIp;
   
   @Override
   protected void processOptions(LinkedList<String> args) {
-	CommandFormat cf = new CommandFormat(2, Integer.MAX_VALUE);
+    CommandFormat cf = new CommandFormat(0, Integer.MAX_VALUE, "l");
     cf.addOptionWithValue("a");
     cf.addOptionWithValue("d");
     cf.addOptionWithValue("u");
@@ -69,40 +70,60 @@ class GroupUserOps extends FsCommand {
     deleteGroupName = cf.getOptValue("d");
     usernameIp =  cf.getOptValue("u");
     adduser = addGroupName!=null;
+    listGroup = cf.getOpt("l");
     deleteuser = deleteGroupName!=null;
+    out.println(adduser?"adduser":"notadduser");
+    out.println(deleteuser?"deleteuser":"notdeleteuser");
+    out.println(listGroup?"listGroup":"notlistGroup");
     if (args.isEmpty()) args.add(Path.CUR_DIR);
-
   }
 
   @Override
   protected void processPath(PathData item) throws IOException {
-    // if (item.stat.isDirectory()) {      
-    //   throw new PathExistsException(item.toString());
-      
-    // } else {
-    //   throw new PathIsNotDirectoryException(item.toString());
-    // }    
     String user = usernameIp;
-    String username = user.split(":")[0];
-    String userIp = user.split(":")[1];
- 
-    if(adduser)
+    String username = user.split("@")[0];
+    String userIp = user.split("@")[1];
+
+    if(adduser){
       item.fs.addUsertoGroup(new User(username, userIp), addGroupName);
-    else if(deleteuser)
+      out.println("Group:"+addGroupName);
+    }
+    else if(deleteuser){
       item.fs.removeUserFromGroup(new User(username, userIp), deleteGroupName);
+      out.println("Group:"+deleteGroupName);
+    
+    }
+    else{
+      List<String> res = item.fs.getGroups(new User(username, userIp));
+      for(String g: res){
+        out.println(g);
+      }
+    }
   }
 
   @Override
   protected void processNonexistentPath(PathData item) throws IOException {
     // check if parent exists. this is complicated because getParent(a/b/c/) returns a/b/c, but
     // we want a/b
-   String user = usernameIp;
-    String username = user.split(":")[0];
-    String userIp = user.split(":")[1];
- 
-    if(adduser)
+   	String user = usernameIp;
+ 		out.println(user);
+    String username = user.split("@")[0];
+    String userIp = user.split("@")[1];
+    if(adduser){
       item.fs.addUsertoGroup(new User(username, userIp), addGroupName);
-    else if(deleteuser)
+      out.println("Group:"+addGroupName);
+    
+    }
+    else if(deleteuser){
       item.fs.removeUserFromGroup(new User(username, userIp), deleteGroupName);
+      out.println("Group:"+deleteGroupName);
+    
+    }
+    else{
+      List<String> res = item.fs.getGroups(new User(username, userIp));
+      for(String g: res){
+        out.println(g);
+      }
+    }
   }
 }

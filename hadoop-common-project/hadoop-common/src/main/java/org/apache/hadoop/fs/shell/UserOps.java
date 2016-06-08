@@ -78,15 +78,10 @@ class UserOps extends FsCommand {
 
   @Override
   protected void processPath(PathData item) throws IOException {
-    // if (item.stat.isDirectory()) {      
-    //   throw new PathExistsException(item.toString());
-      
-    // } else {
-    //   throw new PathIsNotDirectoryException(item.toString());
-    // }   
 	  
-    if(adduser)
+    if(adduser){
       item.fs.createUser(new User(addUserName, userIp));
+		}
     else if(deleteuser)
       item.fs.deleteUser(new User(deleteUserName, userIp));
   }
