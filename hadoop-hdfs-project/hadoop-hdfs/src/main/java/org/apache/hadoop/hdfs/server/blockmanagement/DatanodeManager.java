@@ -675,9 +675,6 @@ public class DatanodeManager {
     	DBHelper dbHelper = new DBHelper();    	
     	dbHelper.deleteUserByIp(nodeID.getIpAddr());//delete all DBHelper IPs
     	
-    	FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteNode.txt"));
-    	w.write(nodeID.getIpAddr()+"delete node\n");
-    	w.close();
     	System.out.println("Success");
     }
     catch(Exception e){

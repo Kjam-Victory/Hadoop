@@ -647,15 +647,6 @@ public class ProtobufRpcEngine implements RpcEngine {
         BlockingService service = (BlockingService) protocolImpl.protocolImpl;
         MethodDescriptor methodDescriptor = service.getDescriptorForType()
             .findMethodByName(methodName);
-				try{
-					FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/log2.txt"));
-        	w.write("Call: connectionProtocolName=" + connectionProtocolName);
-        	w.close();
-
-                }
-				catch(Exception e){
-					e.printStackTrace();
-				}
         if (methodDescriptor == null) {
           String msg = "Unknown method " + methodName + " called on " 
                                 + connectionProtocolName + " protocol.";

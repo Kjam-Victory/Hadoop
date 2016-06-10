@@ -328,14 +328,6 @@ public class NameNodeRpcServer implements NamenodeProtocols {
       }
       LOG.info("Service RPC server is binding to " + bindHost + ":" +
           serviceRpcAddr.getPort());
-			try{
-        	FileWriter fw = new FileWriter(new File("/Users/Kai_Jiang/Desktop/RpcServerLog.txt"), true);
-        	fw.write("Service RPC server is binding to " + bindHost + ":" + serviceRpcAddr.getPort());
-        	fw.close();
-        }
-        catch(Exception e){
-        	e.printStackTrace();
-        }
 
       int serviceHandlerCount =
         conf.getInt(DFS_NAMENODE_SERVICE_HANDLER_COUNT_KEY,

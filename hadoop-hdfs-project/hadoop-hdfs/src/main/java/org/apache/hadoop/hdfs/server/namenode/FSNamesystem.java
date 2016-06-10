@@ -1696,9 +1696,6 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 
 		DBhelper.createGroup(group);
 		DBhelper.addGroupOwnertoGroup(user, group);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/a.txt"));
-//      w.write(group+"\n");
-//      w.close();
 //      System.out.println("Success");
       //checkNameNodeSafeMode("Cannot set owner for " + src);
       //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
@@ -1734,18 +1731,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
 			DBhelper.deleteGroup(group);
 		}
-		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteGroup.txt"));
-	      w.write(group+"\n");
-	      w.close();
-		}
       //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteGroup.txt"));
-//      w.write(group+"\n");
-//      w.close();
-//      System.out.println("Success");
-//      //checkNameNodeSafeMode("Cannot set owner for " + src);
-//      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -1776,17 +1762,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 			DBhelper.createUser(user, new Timestamp(new java.util.Date().getTime()));
 		}
 		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/createUser.txt"));
-	      w.write("hahaha \n");
-	      w.close();
-		}
       //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/createUser.txt"));
-//      w.write("hahaha \n");
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -1817,19 +1793,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 
 			DBhelper.deleteUser(user);
 		}
-		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteUser.txt"));
-	      w.write("hahaha \n");
-	      w.close();
-		}
 		
-      //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/deleteUser.txt"));
-//      w.write("hahaha \n");
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -1856,27 +1820,13 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     	String realCallerName = callerName.split("/")[0];
     	String callerIp = callerName.split("/")[1];
     	User caller = new User(realCallerName, callerIp);
-         FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
-	      w.write(callerName+"@"+callerIp+":"+this.fsOwner.getShortUserName()+"\n");
-	      w.write(user.getName()+":"+user.getIP()+":"+group+"\n");	
     	//check group owner authority
 		DBHelper DBhelper = new DBHelper();
 		if(DBhelper.isGroupOwner(caller, group) || this.fsOwner.getShortUserName().equals(callerName)){			
 
 			DBhelper.addUsertoGroup(user, group);
 		}
-		else{
-	      w.write("hahaha \n");
-		}
-
-	      w.close();
       //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/addUsertoGroup.txt"));
-//      w.write("hahaha \n");
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -1910,19 +1860,8 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 
 			DBhelper.removeUserFromGroup(user, group);
 		}
-		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/removeUserFromGroup.txt"));
-	      w.write(group+"\n");
-	      w.close();
-		}
 		
       //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/removeUserFromGroup.txt"));
-//      w.write(group+"\n");
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -1953,16 +1892,8 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 			return DBhelper.getGroups(user);
 		}
 		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));      
-	      w.close();
 	      return new ArrayList<String>();
 		}
-      //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getGroups.txt"));      
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -1999,16 +1930,9 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 			return DBhelper.getAllUsers();
 		}
 		else{
-	      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));      
-	      w.close();
 	      return new ArrayList<User>();
 		}
       //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllUsers.txt"));      
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
@@ -2038,11 +1962,6 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
 
 		return DBhelper.getAllGroups();
       //checkOperation(OperationCategory.WRITE);
-//      FileWriter w = new FileWriter(new File("/Users/Kai_Jiang/Desktop/getAllGroups.txt"));      
-//      w.close();
-//      System.out.println("Success");
-      //checkNameNodeSafeMode("Cannot set owner for " + src);
-      //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);

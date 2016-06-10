@@ -355,66 +355,18 @@ class FSPermissionChecker implements AccessControlEnforcer {
     callerTempGroups.addAll(getGroups());
     callerTempGroups.retainAll(fileOwnerGroups);
    
-    String win = "/Users/Kai_Jiang/Desktop/Permission.log";
-        FileWriter writer;
-        try {
-                writer = new FileWriter(win,true);
-                writer.write(fileOwner+"\n");
-                writer.write(fileOwnerIpAddr+"\n");
-                writer.write(realfsOwnerName+"\n\n");
-
-                for(String fileownergroup: fileOwnerGroups){
-                        writer.write(fileownergroup+"\n");
-            }
-                writer.write("\n");
-                for(String s:getGroups()){
-                        writer.write(s+"\n");
-                }
-                writer.write("\n");
-                writer.close();
-        }
-        catch(Exception e){
-                e.printStackTrace();
-        }
-
 
 
 
     if (getUser().equals(inode.getUserName())) { //user class
-      try {
-                writer = new FileWriter(win,true);
-                writer.write("owner pass\n");
-                writer.close();
-        }
-        catch(Exception e){
-                e.printStackTrace();
-        }
-
-			if (mode.getUserAction().implies(access)) { return; }
     }
     /*else if (getGroups().contains(inode.getGroupName())) { //group class
       if (mode.getGroupAction().implies(access)) { return; }
     }*/
-		else if (!callerTempGroups.isEmpty()) { //new group class
-        try {
-                writer = new FileWriter(win,true);
-                writer.write("group pass\n");
-                writer.close();
-        }
-        catch(Exception e){
-                e.printStackTrace();
-        }
+    else if (!callerTempGroups.isEmpty()) { //new group class
         if (mode.getGroupAction().implies(access)) { return; }
     }
     else { //other class
-			try {
-                writer = new FileWriter(win,true);
-                writer.write("other pass\n");
-                writer.close();
-        }
-        catch(Exception e){
-                e.printStackTrace();
-        }
 
       if (mode.getOtherAction().implies(access)) { return; }
     }
