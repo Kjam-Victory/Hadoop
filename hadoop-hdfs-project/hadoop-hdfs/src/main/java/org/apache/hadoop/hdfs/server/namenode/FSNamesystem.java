@@ -1757,13 +1757,14 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
     	String callerName = caller.getShortUserName();
     	
     	//check super user authority
-		DBHelper DBhelper = new DBHelper();
-		if(this.fsOwner.getShortUserName().equals(callerName)){			
-			DBhelper.createUser(user, new Timestamp(new java.util.Date().getTime()));
-		}
-		else{
+		  DBHelper DBhelper = new DBHelper();
+		  if(this.fsOwner.getShortUserName().equals(callerName)){			
+			  DBhelper.createUser(user, new Timestamp(new java.util.Date().getTime()));
+	  	}
+		  else{
       //checkOperation(OperationCategory.WRITE);
-    } catch (Exception e) {
+      }
+		} catch (Exception e) {
 //      System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
       throw e;
