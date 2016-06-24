@@ -1700,6 +1700,7 @@ public class FSNamesystem implements Namesystem, FSNamesystemMBean,
       //checkNameNodeSafeMode("Cannot set owner for " + src);
       //auditStat = FSDirAttrOp.setOwner(dir, src, username, group);
     } catch (Exception e) {
+      e.printStackTrace();
       //System.out.println("Fail");
 			//logAuditEvent(false, "addGroup", group);
       throw e;

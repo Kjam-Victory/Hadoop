@@ -825,7 +825,7 @@ public class NameNodeRpcServer implements NamenodeProtocols {
   }
 
 
-	@Override // ClientProtocol
+  @Override // ClientProtocol
   public void createGroup(String groupname, User user)
       throws IOException {
     checkNNStartup();

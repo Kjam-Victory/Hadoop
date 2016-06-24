@@ -23,6 +23,7 @@ import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_KERBEROS
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_TOKEN_FILES;
 import static org.apache.hadoop.util.PlatformName.IBM_JAVA;
 
+import org.apache.hadoop.net.NetUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -89,6 +90,11 @@ public class UserGroupInformation {
   private static final Logger LOG = LoggerFactory.getLogger(
       UserGroupInformation.class);
 
+  /**
+   * The IP Info for Secured-Simple-Auth embedded in UGI
+   */
+  private String initHostIpAddr;
+  
   /**
    * Percentage of the ticket window to use before we renew ticket.
    */
@@ -286,6 +292,8 @@ public class UserGroupInformation {
    */
   private static synchronized void initialize(Configuration conf,
                                               boolean overrideNameRules) {
+	
+
     authenticationMethod = SecurityUtil.getAuthenticationMethod(conf);
     if (overrideNameRules || !HadoopKerberosName.hasRulesBeenSet()) {
       try {
@@ -441,23 +449,17 @@ public class UserGroupInformation {
   }
 
   private static class RealUser implements Principal {
-    private final UserGroupInformation realUser;
+    private final UserGroupInformation realUser;    
     
     RealUser(UserGroupInformation realUser) {
       this.realUser = realUser;
+      
     }
     
     @Override
-    public String getName() {
-      String hostIpAddr = "";
-      try{
-    	  InetAddress ipAddr = InetAddress.getLocalHost();
-    	  hostIpAddr = ipAddr.getHostAddress();
-      }
-      catch(Exception e){
-    	  e.printStackTrace();
-      }
-      return realUser.getUserName()+"/"+hostIpAddr;
+    public String getName() {     
+    	
+      return realUser.getUserName()+"/"+NetUtils.getRealLocalHost();
     }
     
     public UserGroupInformation getRealUser() {
@@ -645,6 +647,11 @@ public class UserGroupInformation {
     this.user = subject.getPrincipals(User.class).iterator().next();
     this.isKeytab = KerberosUtil.hasKerberosKeyTab(subject);
     this.isKrbTkt = KerberosUtil.hasKerberosTicket(subject);
+    this.initHostIpAddr = NetUtils.getRealLocalHost();
+  }
+  
+  public void setInitHostIpAddr(String clientIp){
+	  this.initHostIpAddr = clientIp;
   }
   
   /**
@@ -1486,16 +1493,8 @@ public class UserGroupInformation {
    * @return the user's name up to the first '/' or '@'.
    */
   public String getShortUserName() {
-	String hostIpAddr = "";
-    try{
-      InetAddress ipAddr = InetAddress.getLocalHost();
-      hostIpAddr = ipAddr.getHostAddress();
-    }
-    catch(Exception e){
-      e.printStackTrace();
-    }
     for (User p: subject.getPrincipals(User.class)) {
-      return p.getShortName()+"/"+hostIpAddr;
+      return p.getShortName()+"/"+initHostIpAddr;
     }
     return null;
   }

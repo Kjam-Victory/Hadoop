@@ -23,6 +23,7 @@ import java.util.List;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import org.apache.hadoop.net.NetUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -45,7 +46,7 @@ class UserOps extends FsCommand {
   }
   
   public static final String NAME = "usr";
-  public static final String USAGE = "[[-a|-d] <user>] ...";
+  public static final String USAGE = "[[-a|-d] <user@ipAddr>] ...";
   public static final String DESCRIPTION =
     "Add/Delete a user from HDFS\n";   
 
@@ -63,16 +64,19 @@ class UserOps extends FsCommand {
     cf.parse(args);
     addUserName = cf.getOptValue("a");
     deleteUserName = cf.getOptValue("d");
-    adduser = cf.getOptValue("a")!=null;
-    deleteuser = cf.getOptValue("d")!=null;
-        
-
-    try {
-      InetAddress ipAddr = InetAddress.getLocalHost();        
-      userIp = ipAddr.getHostAddress();
-    } catch (UnknownHostException ex) {
-        ex.printStackTrace();
+    if(cf.getOptValue("a")!=null){
+    	adduser = true;
+    	deleteuser = false;
+    	userIp = addUserName.split("@")[1];
+    	addUserName = addUserName.split("@")[0];    	
     }
+    else if(cf.getOptValue("d")!=null){
+    	deleteuser = true;
+    	adduser = false;
+    	userIp = deleteUserName.split("@")[1];
+    	deleteUserName = deleteUserName.split("@")[0];    	
+    }       
+	
     if (args.isEmpty()) args.add(Path.CUR_DIR);
   }
 

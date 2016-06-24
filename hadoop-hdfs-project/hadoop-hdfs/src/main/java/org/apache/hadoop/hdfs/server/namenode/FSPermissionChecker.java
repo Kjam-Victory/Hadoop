@@ -19,7 +19,7 @@ package org.apache.hadoop.hdfs.server.namenode;
 
 import org.apache.hadoop.database.*;
 import java.util.List;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -87,11 +87,14 @@ class FSPermissionChecker implements AccessControlEnforcer {
     this.fsOwner = fsOwner;
     this.supergroup = supergroup;
     this.callerUgi = callerUgi;
+    
     HashSet<String> s =
         new HashSet<String>(Arrays.asList(callerUgi.getGroupNames()));
     groups = Collections.unmodifiableSet(s);
     user = callerUgi.getShortUserName();
-    isSuper = user.equals(fsOwner) || groups.contains(supergroup);
+  	
+		
+	isSuper = user.equals(fsOwner) || groups.contains(supergroup);
     this.attributeProvider = attributeProvider;
   }
 
@@ -341,7 +344,7 @@ class FSPermissionChecker implements AccessControlEnforcer {
       }
     }
 
-		String fileOwner = inode.getUserName();
+    String fileOwner = inode.getUserName();
     String fileOwnerIpAddr = fileOwner.split("/")[1];
     DBHelper dbHelper = new DBHelper();
     String realfsOwnerName = fileOwner.split("/")[0];
@@ -356,9 +359,8 @@ class FSPermissionChecker implements AccessControlEnforcer {
     callerTempGroups.retainAll(fileOwnerGroups);
    
 
-
-
     if (getUser().equals(inode.getUserName())) { //user class
+      if (mode.getUserAction().implies(access)) { return; }
     }
     /*else if (getGroups().contains(inode.getGroupName())) { //group class
       if (mode.getGroupAction().implies(access)) { return; }

@@ -2,6 +2,8 @@ package org.apache.hadoop.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.sqlite.SQLiteConfig;
+
 public class DbManager {
         static private String databaseURL = "jdbc:mysql://localhost:3306/";
         static private String dbname = "Hadoop";
@@ -17,20 +19,25 @@ public class DbManager {
 	 */
 	public static Connection getConnection(boolean readOnly)
 	throws SQLException {        
-            Connection conn = DriverManager.getConnection(
-                databaseURL + dbname, username, password);
-            conn.setReadOnly(readOnly);        
-            return conn;
-        }
+        	try {  
+	        	SQLiteConfig config = new SQLiteConfig();  
+	        	config.enforceForeignKeys(true);  
+	        	Connection connection = DriverManager.getConnection("jdbc:sqlite:/hadoop/Hadoop.db",config.toProperties());
+	        	return connection;
+	    	} catch (SQLException ex) {
+	    		return null;
+	    	}  
+	}
 	
 	private DbManager() {}
 	
 	static {
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName("org.sqlite.JDBC").newInstance();			
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
+
 }

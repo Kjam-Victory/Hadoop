@@ -1,32 +1,11 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 public class DbManager {
-	
-	static{
-		try {			
-			BufferedReader f = new BufferedReader(new FileReader(new File("/hadoop/conf/ugi_hub.conf")));			
-			String conf = f.readLine();
-			dbname = conf.split(",")[0];
-			username = conf.split(",")[1];
-			password = conf.split(",")[2];
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
         static private String databaseURL = "jdbc:mysql://localhost:3306/";
-        static private String dbname;
-        static private String username;
-        static private String password;
+        static private String dbname = "Hadoop";
+        static private String username = "root";
+        static private String password = "1728";
 	
 	/**
 	 * Opens a database connection
@@ -37,17 +16,16 @@ public class DbManager {
 	 */
 	public static Connection getConnection(boolean readOnly)
 	throws SQLException {        
-            Connection conn = DriverManager.getConnection(
-                databaseURL + dbname, username, password);
-            conn.setReadOnly(readOnly);        
-            return conn;
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:/hadoop/Hadoop.db");
+            
+			return conn;
         }
 	
 	private DbManager() {}
 	
 	static {
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName("org.sqlite.JDBC").newInstance();			
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

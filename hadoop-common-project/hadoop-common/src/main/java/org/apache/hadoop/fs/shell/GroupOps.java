@@ -23,6 +23,7 @@ import java.util.List;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import org.apache.hadoop.net.NetUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -80,14 +81,9 @@ class GroupOps extends FsCommand {
     // } else {
     //   throw new PathIsNotDirectoryException(item.toString());
     // }
-    String userIp = null;
+    String userIp = NetUtils.getRealLocalHost();
     String username = System.getProperty("user.name");
-    try {
-      InetAddress ipAddr = InetAddress.getLocalHost();        
-      userIp = ipAddr.getHostAddress();
-    } catch (UnknownHostException ex) {
-        ex.printStackTrace();
-    }
+
     if(createGroup)
       item.fs.createGroup(createGroupName, new User(username, userIp));
     else if(deleteGroup)
@@ -105,14 +101,8 @@ class GroupOps extends FsCommand {
   protected void processNonexistentPath(PathData item) throws IOException {
     // check if parent exists. this is complicated because getParent(a/b/c/) returns a/b/c, but
     // we want a/b
-    String userIp = null;
+    String userIp = NetUtils.getRealLocalHost();
     String username = System.getProperty("user.name");
-    try {
-      InetAddress ipAddr = InetAddress.getLocalHost();        
-      userIp = ipAddr.getHostAddress();
-    } catch (UnknownHostException ex) {
-        ex.printStackTrace();
-    }
     if(createGroup)
       item.fs.createGroup(createGroupName, new User(username, userIp));
     else if(deleteGroup)

@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.security;
 
+import org.apache.hadoop.net.NetUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.apache.hadoop.database.*;
@@ -76,15 +77,14 @@ public class HadoopGroupMapping
   public List<String> getGroups(String userName) throws IOException {
 	  List<String> groups = null;
 	  try {
-		  DBHelper DBhelper = new DBHelper();
-          InetAddress ipAddr = InetAddress.getLocalHost();
+		  		DBHelper DBhelper = new DBHelper();
           String userIpAddr = userName.split("/")[1];
           DBHelper dbHelper = new DBHelper();
           String realUserName = userName.split("/")[0];
           org.apache.hadoop.database.User user = new org.apache.hadoop.database.User(realUserName, userIpAddr);
 					groups = DBhelper.getGroups(user);
           System.out.println(userIpAddr);
-      } catch (UnknownHostException ex) {
+      } catch (Exception ex) {
           ex.printStackTrace();
           System.out.println("Group Name Mapping Service Failed!");
       }

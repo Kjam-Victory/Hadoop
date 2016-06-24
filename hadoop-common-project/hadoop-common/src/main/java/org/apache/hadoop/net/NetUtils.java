@@ -74,6 +74,20 @@ public class NetUtils {
   /** Base URL of the Hadoop Wiki: {@value} */
   public static final String HADOOP_WIKI = "http://wiki.apache.org/hadoop/";
 
+
+	public static String getRealLocalHost(){
+		try {
+			Socket s = new Socket("google.com",80);
+			String ret = s.getLocalAddress().getHostAddress();
+	    s.close();
+			return ret;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		} 
+	}
+
   /**
    * Get the socket factory for the given class according to its
    * configuration parameter

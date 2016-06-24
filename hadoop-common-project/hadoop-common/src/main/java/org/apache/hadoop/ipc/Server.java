@@ -28,6 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.net.BindException;
@@ -387,8 +389,16 @@ public abstract class Server {
    */
   public static UserGroupInformation getRemoteUser() {
     Call call = CurCall.get();
-    return (call != null && call.connection != null) ? call.connection.user
-        : null;
+    if(call != null && call.connection != null){
+    	    	    	
+    	UserGroupInformation user = call.connection.user;
+    	//Set the client IP from Socket
+    	String clientIp = call.connection.socket.getRemoteSocketAddress().toString().split("/")[1].split(":")[0];    			    	
+    	user.setInitHostIpAddr(clientIp);
+    	return user;
+    }
+    else
+    	return null;
   }
  
   /** Return true if the invocation was through an RPC.

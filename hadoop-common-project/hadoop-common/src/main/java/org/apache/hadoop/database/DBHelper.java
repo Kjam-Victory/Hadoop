@@ -1,5 +1,6 @@
 package org.apache.hadoop.database;
 
+import java.io.*;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,7 +9,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.database.*;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.conf.Configuration;
@@ -23,18 +23,21 @@ public class DBHelper {
         try {
             con = DbManager.getConnection(false);
             Statement stmt = con.createStatement();
-            String sqlString = "SELECT * FROM Groups WHERE Name = \'" + group + "\'";
+            String sqlString = "SELECT * FROM Groups WHERE Name = \'" + group + "\';";
             ResultSet rs = stmt.executeQuery(sqlString);
             if (rs.next()) {
                 con.close();
                 return false;
             }
-            sqlString = "INSERT INTO Groups (Name) VALUES(\'"+ group + "\')";
+            rs.close();
+            sqlString = "INSERT INTO Groups (Name) VALUES(\'"+ group + "\');";
             stmt.executeUpdate(sqlString);
             con.close();
+	    
             return true;
         } catch (SQLException ex) {
-            System.out.println(ex);
+            
+	    System.out.println(ex);
             return false;
         }
     }
@@ -61,6 +64,7 @@ public class DBHelper {
                 con.close();
                 return false;
             }
+            rs.close();
             sqlString = "INSERT INTO Users (Name, IP, CreateTime) VALUES(\'"+ user.getName() + "\', " + user.getIP() + ", \'" + time + "\')";
             stmt.executeUpdate(sqlString);
             con.close();
@@ -93,6 +97,7 @@ public class DBHelper {
         		});        		
         		if(!deleteUser(new User(userName, ipnum))) return false;
         	}
+        	rs.close();
         	con.close();
         	return true;
     	}catch (Exception ex) {
@@ -114,7 +119,7 @@ public class DBHelper {
                 	if(!deleteGroup(groupName)) return false;
                 }
             }    
-            
+            rs.close();
             sqlString = "DELETE FROM Users WHERE Name = \'" + user.getName() + "\' AND IP = " + user.getIP();
             stmt.executeUpdate(sqlString);
             con.close();
@@ -124,19 +129,7 @@ public class DBHelper {
             return false;
         }
     }
-//    public boolean deleteUser(User user) {
-//        try {
-//            con = DbManager.getConnection(false);
-//            Statement stmt = con.createStatement();
-//            String sqlString = "DELETE FROM Users WHERE Name = \'" + user.getName() + "\' AND IP = " + user.getIP();
-//            stmt.executeUpdate(sqlString);
-//            con.close();
-//            return true;
-//        } catch (SQLException ex) {
-//            System.out.println(ex);
-//            return false;
-//        }
-//    }
+
     public boolean addUsertoGroup(User user, String group) {
         try {
             con = DbManager.getConnection(false);
@@ -161,6 +154,7 @@ public class DBHelper {
                 res = true;
                 break;
             }
+            rs.close();
             con.close();
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -203,6 +197,7 @@ public class DBHelper {
             while (rs.next()) {
                 res.add(rs.getString("Groupname"));
             }
+            rs.close();
             con.close();
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -217,9 +212,10 @@ public class DBHelper {
             String sqlString = "SELECT * FROM Users";
             ResultSet rs = stmt.executeQuery(sqlString);
             while (rs.next()) {
-                User user = new User(rs.getString("Name"), rs.getInt("IP"));
+                User user = new User(rs.getString("Name"), rs.getLong("IP"));
                 res.add(user);
             }
+            rs.close();
             con.close();
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -236,6 +232,7 @@ public class DBHelper {
             while (rs.next()) {
                 res.add(rs.getString("Name"));
             }
+            rs.close();
             con.close();
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -252,6 +249,7 @@ public class DBHelper {
             if (rs.next()) {
                 res = rs.getTimestamp(1);
             }
+            rs.close();
         } catch (SQLException ex) {
             System.out.println(ex);
         }
@@ -309,7 +307,7 @@ public class DBHelper {
             System.out.println("Deleteing group failed.");
     }
     public static void main(String[] args) {
-        DBHelper db = new DBHelper();
+    	DBHelper db = new DBHelper();
         db.test();
     }
 }
